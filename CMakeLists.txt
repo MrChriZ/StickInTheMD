@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(StuckInTheMD VERSION 1.0.8 LANGUAGES C CXX)
+project(StuckInTheMD VERSION 1.0.9 LANGUAGES C CXX)
 
 find_package(Threads REQUIRED)
 
