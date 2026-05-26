@@ -31,7 +31,7 @@ Pre-built installers are published on [GitHub Releases](https://github.com/MrChr
 
 On Windows 10, install the [WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/) if the app window does not appear.
 
-**New releases:** tag a version (e.g. `v1.0.1`) and push — [`.github/workflows/release.yml`](.github/workflows/release.yml) builds the Windows installer and attaches it to the release automatically.
+**New releases:** tag a version (e.g. `v1.0.3`) and push — [`.github/workflows/release.yml`](.github/workflows/release.yml) builds the Windows installer and attaches it to the release automatically.
 
 ## Dependencies
 

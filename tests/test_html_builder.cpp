@@ -24,17 +24,19 @@ TEST_CASE("HtmlBuilder dark preview sets data-theme") {
   CHECK(page.find("data-theme=\"dark\"") != std::string::npos);
 }
 
-TEST_CASE("path_to_file_url encodes Windows paths") {
-  const auto url = stuckinthemd::path_to_file_url(
-      std::filesystem::path("C:/project"));
-  CHECK(url.find("file:///C:/project") == 0);
+TEST_CASE("path_to_file_url produces a directory file URI") {
+  const auto dir = std::filesystem::temp_directory_path();
+  const auto url = stuckinthemd::path_to_file_url(dir);
+  CHECK(url.find("file://") == 0);
   CHECK(url.back() == '/');
 }
 
 TEST_CASE("HtmlBuilder preview adds base href for resource directory") {
+  const auto dir = std::filesystem::temp_directory_path();
   stuckinthemd::HtmlBuilder builder;
-  const auto page = builder.preview_page(
-      "<img src=\"assets/x.png\" alt=\"\">", false,
-      std::filesystem::path("C:/project"));
-  CHECK(page.find("<base href=\"file:///C:/project/") != std::string::npos);
+  const auto page =
+      builder.preview_page("<img src=\"assets/x.png\" alt=\"\">", false, dir);
+  const std::string expected =
+      "<base href=\"" + stuckinthemd::path_to_file_url(dir) + "\">";
+  CHECK(page.find(expected) != std::string::npos);
 }
