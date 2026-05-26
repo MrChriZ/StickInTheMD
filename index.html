@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StuckInTheMD — Lightweight Markdown editor</title>
+  <meta name="description" content="A lightweight, cross-platform Markdown editor with live preview. Built with C++20 and your OS webview — no Electron.">
+  <link rel="icon" href="https://raw.githubusercontent.com/MrChriZ/StuckInTheMD/main/assets/icon/stuckinthemd-32.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="./">
+      <img src="https://raw.githubusercontent.com/MrChriZ/StuckInTheMD/main/assets/icon/stuckinthemd-64.png" width="40" height="40" alt="">
+      <span>StuckInTheMD</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="#build">Build</a>
+      <a href="https://github.com/MrChriZ/StuckInTheMD">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="badge">v1.0.9 · Windows · macOS · Linux</p>
+      <h1>Markdown editing,<br>without the bloat.</h1>
+      <p class="lead">
+        Live preview, native save dialogs, and your OS webview —
+        <strong>no bundled Chromium or Electron</strong>.
+        A small C++20 app that stays out of your way.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://github.com/MrChriZ/StuckInTheMD/releases/latest">Download for Windows</a>
+        <a class="btn btn-secondary" href="https://github.com/MrChriZ/StuckInTheMD">View on GitHub</a>
+      </div>
+      <p class="hero-note">
+        <img src="https://github.com/MrChriZ/StuckInTheMD/actions/workflows/ci.yml/badge.svg" alt="CI status" width="88" height="20">
+        <span>Tested on Linux, macOS, and Windows</span>
+      </p>
+    </section>
+
+    <figure class="screenshot-wrap">
+      <img
+        src="https://raw.githubusercontent.com/MrChriZ/StuckInTheMD/main/assets/screenshot.png"
+        alt="StuckInTheMD split view: Markdown editor on the left, live HTML preview on the right"
+        width="1280"
+        height="720"
+        loading="lazy">
+      <figcaption>Split editor with live preview</figcaption>
+    </figure>
+
+    <section id="features" class="features">
+      <h2>Features</h2>
+      <ul class="feature-grid">
+        <li>
+          <h3>Live preview</h3>
+          <p>Edit Markdown on the left; formatted HTML updates on the right.</p>
+        </li>
+        <li>
+          <h3>Lightweight runtime</h3>
+          <p>WebView2, WebKit, or WebKitGTK — whatever your OS already ships.</p>
+        </li>
+        <li>
+          <h3>Files &amp; sync</h3>
+          <p>Open, save, drag-and-drop, auto-save, and reload when the file changes on disk.</p>
+        </li>
+        <li>
+          <h3>Focus mode</h3>
+          <p>Cycle split, editor-only, or preview-only. F11 hides the toolbar.</p>
+        </li>
+        <li>
+          <h3>Print &amp; PDF</h3>
+          <p>System print dialog; export PDF via Edge/Chrome or <code>wkhtmltopdf</code> when available.</p>
+        </li>
+        <li>
+          <h3>Smart links</h3>
+          <p>Preview links open in your browser; <code>.md</code> links open in StuckInTheMD.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="download" class="download">
+      <h2>Download</h2>
+      <div class="download-card">
+        <table>
+          <thead>
+            <tr><th>Platform</th><th>Install</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Windows</strong> (x64)</td>
+              <td><a href="https://github.com/MrChriZ/StuckInTheMD/releases/latest">Latest installer</a> (~2.5 MB)</td>
+            </tr>
+            <tr>
+              <td><strong>macOS</strong></td>
+              <td>Build from source (see README)</td>
+            </tr>
+            <tr>
+              <td><strong>Linux</strong></td>
+              <td>Build from source (see README)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="download-note">
+          On Windows 10, install the
+          <a href="https://developer.microsoft.com/microsoft-edge/webview2/">WebView2 runtime</a>
+          if the window does not appear.
+        </p>
+      </div>
+    </section>
+
+    <section class="shortcuts">
+      <h2>Keyboard shortcuts</h2>
+      <dl class="shortcut-list">
+        <div><dt><kbd>Ctrl</kbd>+<kbd>O</kbd></dt><dd>Open</dd></div>
+        <div><dt><kbd>Ctrl</kbd>+<kbd>S</kbd></dt><dd>Save</dd></div>
+        <div><dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></dt><dd>Save As</dd></div>
+        <div><dt><kbd>Ctrl</kbd>+<kbd>P</kbd></dt><dd>Print</dd></div>
+        <div><dt><kbd>Ctrl</kbd>+<kbd>\</kbd></dt><dd>Cycle view</dd></div>
+        <div><dt><kbd>F11</kbd></dt><dd>Distraction-free</dd></div>
+        <div><dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></dt><dd>Theme</dd></div>
+      </dl>
+    </section>
+
+    <section id="build" class="build">
+      <h2>Build from source</h2>
+      <pre><code>git clone https://github.com/MrChriZ/StuckInTheMD.git
+cd StuckInTheMD
+bash scripts/bootstrap-third-party.sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release</code></pre>
+      <p>Full platform notes and tests are in the <a href="https://github.com/MrChriZ/StuckInTheMD#readme">README</a>.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      MIT License ·
+      <a href="https://github.com/MrChriZ/StuckInTheMD">Source</a> ·
+      <a href="https://github.com/MrChriZ/StuckInTheMD/releases">Releases</a> ·
+      <a href="https://github.com/MrChriZ/StuckInTheMD/blob/main/THIRD_PARTY_NOTICES.md">Third-party notices</a>
+    </p>
+    <p class="publisher">Windows installer published by Leftoverbits.co.uk</p>
+  </footer>
+</body>
+</html>
