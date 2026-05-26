@@ -142,9 +142,9 @@ void StuckApp::setup_bindings() {
     const auto markdown = markdown_from_bind_request(req);
     const auto appearance = decode_bind_arg_at(req, 1);
     const bool dark = appearance == "dark";
-    // Return raw HTML; webview::resolve JSON-encodes once. Do not json_escape here.
-    // Preview uses iframe srcdoc (file:// subframes are blocked in WebView2).
-    return controller_.preview_html_for(markdown, dark);
+    // Binding result must be valid JSON (see webview functional_tests). Preview HTML
+    // is shown via iframe srcdoc in ui.html — not file:// (blocked in WebView2).
+    return json_escape(controller_.preview_html_for(markdown, dark));
   });
 
   webview_->bind("getBootDocument", [this](const std::string &) -> std::string {

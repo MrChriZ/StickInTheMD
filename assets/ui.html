@@ -785,7 +785,10 @@
         preview.removeAttribute("src");
         preview.srcdoc = html || "<!DOCTYPE html><html><body></body></html>";
       } catch (err) {
-        if (gen === previewGen) setStatus("Preview failed");
+        if (gen === previewGen) {
+          console.error("renderPreview failed", err);
+          setStatus("Preview failed");
+        }
       }
     }
 
