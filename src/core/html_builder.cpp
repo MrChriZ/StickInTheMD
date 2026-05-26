@@ -1,6 +1,61 @@
 #include "stuckinthemd/html_builder.hpp"
 
+#include <cctype>
+#include <cstdio>
+#include <system_error>
+
 namespace stuckinthemd {
+
+namespace {
+
+std::string percent_encode_path(const std::string &path) {
+  std::string out;
+  out.reserve(path.size() + 16);
+  for (const unsigned char c : path) {
+    if (std::isalnum(c) != 0 || c == '-' || c == '_' || c == '.' || c == '/' ||
+        c == ':') {
+      out.push_back(static_cast<char>(c));
+    } else {
+      char hex[4];
+      std::snprintf(hex, sizeof(hex), "%%%02X", c);
+      out += hex;
+    }
+  }
+  return out;
+}
+
+std::string base_tag_for_dir(const std::filesystem::path &resource_dir) {
+  if (resource_dir.empty()) {
+    return {};
+  }
+  return "<base href=\"" + path_to_file_url(resource_dir) + "\">";
+}
+
+} // namespace
+
+std::string path_to_file_url(const std::filesystem::path &path) {
+  std::error_code ec;
+  auto abs = std::filesystem::absolute(path, ec);
+  if (ec) {
+    abs = path;
+  }
+  const std::string encoded = percent_encode_path(abs.lexically_normal().generic_string());
+  std::string url;
+  if (encoded.size() >= 2 && std::isalpha(static_cast<unsigned char>(encoded[0])) != 0 &&
+      encoded[1] == ':') {
+    url = "file:///" + encoded;
+  } else if (!encoded.empty() && encoded.front() == '/') {
+    url = "file://" + encoded;
+  } else {
+    url = "file:///" + encoded;
+  }
+  if (!ec && std::filesystem::is_directory(abs)) {
+    if (url.back() != '/') {
+      url.push_back('/');
+    }
+  }
+  return url;
+}
 
 namespace {
 
@@ -64,19 +119,21 @@ pre, code { font-family: Consolas, monospace; font-size: 9pt; }
 
 } // namespace
 
-std::string HtmlBuilder::preview_page(const std::string &body_html,
-                                      const bool dark) const {
+std::string HtmlBuilder::preview_page(const std::string &body_html, const bool dark,
+                                      const std::filesystem::path &resource_dir) const {
   const char *theme_attr = dark ? " data-theme=\"dark\"" : "";
   return std::string("<!DOCTYPE html><html") + theme_attr +
-         "><head><meta charset=\"utf-8\"><style>" + k_preview_css +
-         "</style></head><body>" + body_html + "</body></html>";
+         "><head><meta charset=\"utf-8\">" + base_tag_for_dir(resource_dir) +
+         "<style>" + k_preview_css + "</style></head><body>" + body_html +
+         "</body></html>";
 }
 
 std::string HtmlBuilder::print_page(const std::string &body_html,
-                                    const std::string &title) const {
+                                    const std::string &title,
+                                    const std::filesystem::path &resource_dir) const {
   return std::string("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>") +
-         title + "</title><style>" + k_preview_css + k_print_css +
-         "</style></head><body>" + body_html + "</body></html>";
+         title + "</title>" + base_tag_for_dir(resource_dir) + "<style>" + k_preview_css +
+         k_print_css + "</style></head><body>" + body_html + "</body></html>";
 }
 
 } // namespace stuckinthemd

@@ -1,6 +1,7 @@
 #include "stuckinthemd/stuck_app.hpp"
 
 #include "stuckinthemd/assets.hpp"
+#include "stuckinthemd/html_builder.hpp"
 #include "stuckinthemd/file_dialogs.hpp"
 #include "stuckinthemd/json_util.hpp"
 #include "stuckinthemd/color_theme.hpp"
@@ -103,7 +104,12 @@ void StuckApp::setup_bindings() {
     const auto markdown = decode_bind_arg_at(req, 0);
     const auto appearance = decode_bind_arg_at(req, 1);
     const bool dark = appearance == "dark";
-    return json_escape(controller_.preview_html_for(markdown, dark));
+    const auto html = controller_.preview_html_for(markdown, dark);
+    const auto preview_path = temp_dir() / "preview.html";
+    if (!write_temp_html(preview_path, html)) {
+      return json_escape(std::string{});
+    }
+    return json_escape(path_to_file_url(preview_path));
   });
 
   webview_->bind("getBootDocument", [this](const std::string &) -> std::string {

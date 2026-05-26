@@ -579,7 +579,7 @@
       </section>
       <section class="pane" id="preview-pane">
         <div class="pane-header"><span class="pane-header-dot"></span>Preview</div>
-        <iframe id="preview" title="Preview" sandbox="allow-same-origin"></iframe>
+        <iframe id="preview" title="Preview"></iframe>
       </section>
     </main>
   </div>
@@ -780,9 +780,10 @@
     async function renderPreview() {
       const gen = ++previewGen;
       try {
-        const html = await window.renderMarkdown(editor.value, resolvedAppearance());
+        const previewUrl = await window.renderMarkdown(editor.value, resolvedAppearance());
         if (gen !== previewGen) return;
-        preview.srcdoc = html || "";
+        preview.removeAttribute("srcdoc");
+        preview.src = previewUrl || "about:blank";
       } catch (err) {
         if (gen === previewGen) setStatus("Preview failed");
       }

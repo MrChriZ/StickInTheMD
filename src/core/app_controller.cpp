@@ -34,15 +34,21 @@ std::string AppController::preview_html() const {
 
 std::string AppController::preview_html_for(const std::string &markdown,
                                             const bool dark_preview) const {
-  return html_.preview_page(render_body(markdown), dark_preview);
+  std::filesystem::path resource_dir;
+  if (document_.has_path()) {
+    resource_dir = document_.path()->parent_path();
+  }
+  return html_.preview_page(render_body(markdown), dark_preview, resource_dir);
 }
 
 std::string AppController::print_html() const {
   std::string title = "Untitled";
+  std::filesystem::path resource_dir;
   if (document_.has_path()) {
     title = document_.path()->filename().string();
+    resource_dir = document_.path()->parent_path();
   }
-  return html_.print_page(render_body(document_.content()), title);
+  return html_.print_page(render_body(document_.content()), title, resource_dir);
 }
 
 void AppController::new_document() {
