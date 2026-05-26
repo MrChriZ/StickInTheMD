@@ -20,6 +20,19 @@ Built with **modern C++20**, a small native core, and your operating system's bu
 - **Cross-platform** — Windows, macOS, Linux
 - **CI** — GitHub Actions builds and tests on Linux, macOS, and Windows
 
+## Download
+
+Pre-built installers are published on [GitHub Releases](https://github.com/MrChriZ/StickInTheMD/releases).
+
+| Platform | Download |
+|----------|----------|
+| **Windows** (x64) | [StickInTheMD 1.0.0 setup](https://github.com/MrChriZ/StickInTheMD/releases/download/v1.0.0/StickInTheMD-1.0.0-setup.exe) (~2.5 MB) |
+| macOS / Linux | Build from source (see below) |
+
+On Windows 10, install the [WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/) if the app window does not appear.
+
+**New releases:** tag a version (e.g. `v1.0.1`) and push — [`.github/workflows/release.yml`](.github/workflows/release.yml) builds the Windows installer and attaches it to the release automatically.
+
 ## Dependencies
 
 Build dependencies (md4c, webview, doctest) are fetched by
