@@ -24,6 +24,7 @@ private:
   void setup_bindings();
   void start_autosave_worker();
   void stop_autosave_worker();
+  void update_window_title();
   std::string build_state_json() const;
   bool write_temp_html(const std::filesystem::path &path,
                        const std::string &html) const;

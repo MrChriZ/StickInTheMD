@@ -99,6 +99,27 @@ std::string build_settings_json(const AppController &controller) {
 
 } // namespace
 
+void StuckApp::update_window_title() {
+  if (!webview_) {
+    return;
+  }
+  std::string title;
+  if (controller_.document().has_path()) {
+    std::error_code ec;
+    const auto abs =
+        std::filesystem::absolute(*controller_.document().path(), ec);
+    title = ec ? controller_.document().path()->string() : abs.string();
+  } else {
+    title = "Untitled";
+  }
+  if (controller_.document().is_dirty()) {
+    title += '*';
+  }
+  title += " — StuckInTheMD ";
+  title += app_version();
+  webview_->set_title(title);
+}
+
 void StuckApp::setup_bindings() {
   webview_->bind("renderMarkdown", [this](const std::string &req) -> std::string {
     const auto markdown = decode_bind_arg_at(req, 0);
@@ -132,6 +153,7 @@ void StuckApp::setup_bindings() {
 
   webview_->bind("notifyContentChanged", [this](const std::string &req) {
     controller_.update_content(decode_bind_args(req));
+    update_window_title();
     return std::string("null");
   });
 
@@ -164,6 +186,7 @@ void StuckApp::setup_bindings() {
 
   webview_->bind("newDocument", [this](const std::string &) -> std::string {
     controller_.new_document();
+    update_window_title();
     return build_state_json();
   });
 
@@ -184,6 +207,7 @@ void StuckApp::setup_bindings() {
       json << "null";
     }
     json << R"(,"content":)" << json_escape(controller_.document().content()) << "}";
+    update_window_title();
     return json.str();
   });
 
@@ -196,6 +220,7 @@ void StuckApp::setup_bindings() {
     if (!opened.ok) {
       return std::string(R"({"ok":false,"error":)") + json_escape(opened.error) + "}";
     }
+    update_window_title();
     return std::string(R"({"ok":true,"path":)") + json_escape(path->string()) +
            R"(,"content":)" + json_escape(controller_.document().content()) + "}";
   });
@@ -211,6 +236,7 @@ void StuckApp::setup_bindings() {
     }
     const auto out_path =
         opened.path ? opened.path->string() : std::filesystem::path{path_str}.string();
+    update_window_title();
     return std::string(R"({"ok":true,"path":)") + json_escape(out_path) +
            R"(,"content":)" + json_escape(controller_.document().content()) + "}";
   });
@@ -232,6 +258,7 @@ void StuckApp::setup_bindings() {
     if (!saved.ok) {
       return std::string(R"({"ok":false,"error":)") + json_escape(saved.error) + "}";
     }
+    update_window_title();
     return std::string(R"({"ok":true,"path":)") +
            json_escape(saved.path->string()) + "}";
   });
@@ -284,6 +311,7 @@ void StuckApp::start_autosave_worker() {
       if (saved.ok) {
         controller_.note_autosave(now);
         webview_->dispatch([this, path = saved.path->string()] {
+          update_window_title();
           webview_->eval("window.applySaveResult(" + json_escape(path) + ");");
           webview_->eval("window.showMessage('Auto-saved');");
         });
@@ -305,8 +333,7 @@ int StuckApp::run(int argc, char *argv[]) {
     controller_.open_path(arg_path);
   }
 
-  webview_ = std::make_unique<webview::webview>(true, nullptr); // webview = browser_engine
-  webview_->set_title(std::string("StuckInTheMD ") + app_version());
+  webview_ = std::make_unique<webview::webview>(true, nullptr);
   webview_->set_size(1200, 800, WEBVIEW_HINT_NONE);
 
   const auto main_window = webview_->window();
@@ -318,6 +345,7 @@ int StuckApp::run(int argc, char *argv[]) {
   start_autosave_worker();
 
   webview_->set_html(load_ui_html());
+  update_window_title();
   webview_->eval(
       "window.boot(" + build_settings_json(controller_) + ");");
 
