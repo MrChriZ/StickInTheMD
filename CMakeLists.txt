@@ -96,7 +96,11 @@ if(STICKINTHEMD_BUILD_APP)
         endif()
     endif()
 
-    install(TARGETS stickinthemd RUNTIME DESTINATION .)
+    if(APPLE)
+        install(TARGETS stickinthemd BUNDLE DESTINATION .)
+    else()
+        install(TARGETS stickinthemd RUNTIME DESTINATION .)
+    endif()
 
     if(WIN32)
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/windows_installer.cmake)
