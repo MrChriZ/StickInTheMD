@@ -42,14 +42,18 @@ Linux, WebView2 on Windows 10, etc.).
 
 ## Releases
 
-1. Run tests locally (`scripts/run-tests.sh` or `scripts/run-tests.ps1`).
-2. Push to `main` and wait for the **CI** workflow to pass on GitHub.
-3. Bump `project(StuckInTheMD VERSION …)` in `CMakeLists.txt`, commit, push.
-4. Tag `vX.Y.Z` and push the tag.
+1. Add a `## vX.Y.Z` section with bullet points in [RELEASE_NOTES.md](RELEASE_NOTES.md).
+2. Run tests locally (`scripts/run-tests.sh` or `scripts/run-tests.ps1`).
+3. Push to `main` and wait for the **CI** workflow to pass on GitHub.
+4. Bump `project(StuckInTheMD VERSION …)` in `CMakeLists.txt`, commit, push.
+5. Build the installer (also writes `dist/release-notes-vX.Y.Z.md`):
+   `.\scripts\build-windows-installer.ps1` or `.\scripts\publish-windows-release.ps1`
+6. Tag `vX.Y.Z` and push the tag.
 
 The **Release** workflow runs the full test matrix on Linux, macOS, and Windows
-before it builds or uploads the Windows installer. A failing test blocks the
-release.
+before it builds or uploads the Windows installer. Release body text comes from
+the generated notes file, not auto-generated GitHub summaries. A failing test
+blocks the release.
 
 ## Pull requests
 

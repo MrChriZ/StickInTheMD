@@ -34,10 +34,17 @@ jobs:
         shell: pwsh
         run: ./scripts/build-windows-installer.ps1 -SkipBuild
 
+      - name: Resolve version
+        id: ver
+        shell: pwsh
+        run: |
+          $v = (Select-String -Path CMakeLists.txt -Pattern 'project\s*\(\s*StuckInTheMD\s+VERSION\s+([0-9.]+)').Matches[0].Groups[1].Value
+          echo "version=$v" >> $env:GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          body_path: dist/release-notes-v${{ steps.ver.outputs.version }}.md
           files: |
             dist/StuckInTheMD-*-setup.exe
             THIRD_PARTY_NOTICES.md

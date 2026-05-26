@@ -75,10 +75,20 @@ try {
 }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+$GenNotes = Join-Path $Root "scripts\generate-release-notes.ps1"
+Write-Host "Generating release notes for v$Version..."
+& $GenNotes -Version $Version
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 $Installer = Get-ChildItem -Path $Dist -Filter "StuckInTheMD-$Version-setup.exe" | Select-Object -First 1
 if ($Installer) {
     $mb = [math]::Round($Installer.Length / 1MB, 2)
     Write-Host "Created: $($Installer.FullName) ($mb MB)"
 } else {
     Write-Host "Installer built in $Dist"
+}
+
+$NotesFile = Join-Path $Dist "release-notes-v$Version.md"
+if (Test-Path $NotesFile) {
+    Write-Host "Release notes: $NotesFile"
 }

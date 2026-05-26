@@ -17,5 +17,6 @@ alwaysApply: true
 | Tests | `tests/`, target `stuckinthemd_tests` |
 | Third-party (bootstrap, do not commit clones) | `scripts/bootstrap-third-party.sh`, `third_party/` |
 | CI workflows | `.github/workflows/ci.yml`, `reusable-tests.yml`, `release.yml` |
+| Release notes | `RELEASE_NOTES.md` → `scripts/generate-release-notes.*` → `dist/release-notes-v*.md` |
 
 Do not commit `build/`, `dist/`, or bootstrapped `third_party/{md4c,webview,doctest}/` trees.

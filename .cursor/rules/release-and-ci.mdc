@@ -1,5 +1,5 @@
 ---
-description: CI, releases, installers, and deploy checklist
+description: CI, releases, installers, release notes, and deploy checklist
 alwaysApply: true
 ---
 
@@ -10,23 +10,42 @@ alwaysApply: true
 - Workflow: `.github/workflows/ci.yml` → calls `reusable-tests.yml` (Linux, macOS, Windows).
 - Badge in README tracks `ci.yml` on `main` (~3–5 min; badge cache can lag).
 
+## Release notes (required before every release)
+
+- **Source of truth:** `RELEASE_NOTES.md` at repo root — one `## vX.Y.Z` section per version with bullet points.
+- **Generated artifact:** `dist/release-notes-vX.Y.Z.md` (created by the installer build; do not commit `dist/`).
+- **Scripts:**
+  - `.\scripts\generate-release-notes.ps1` — extract notes for current or `-Version` from `CMakeLists.txt`
+  - `bash scripts/generate-release-notes.sh [version]` — same on POSIX
+- **When bumping version:** edit `RELEASE_NOTES.md` first, then bump `project(StuckInTheMD VERSION …)` in `CMakeLists.txt`.
+
 ## Release checklist
 
-1. `.\scripts\run-tests.ps1` or `bash scripts/run-tests.sh`
-2. Push to `main` — wait for **CI** green
-3. Bump `project(StuckInTheMD VERSION …)` in `CMakeLists.txt`, commit, push
-4. `git tag vX.Y.Z && git push origin vX.Y.Z`
+1. Add or update the `## vX.Y.Z` section in `RELEASE_NOTES.md`.
+2. `.\scripts\run-tests.ps1` or `bash scripts/run-tests.sh`
+3. Push to `main` — wait for **CI** green
+4. Bump `CMakeLists.txt` version, commit, push
+5. Build locally (validates notes + installer):
+   ```powershell
+   .\scripts\publish-windows-release.ps1
+   ```
+   Or step-by-step: `run-tests.ps1` → `build-windows-installer.ps1`
+6. `git tag vX.Y.Z && git push origin vX.Y.Z` — Release workflow uploads installer + `body_path` from generated notes
+7. If Actions did not run, publish manually:
+   ```powershell
+   .\scripts\publish-windows-release.ps1 -Publish
+   ```
 
 ## Release workflow (on `v*` tags)
 
-- `.github/workflows/release.yml` runs **full test matrix first** (`needs: tests`), then builds Windows installer and creates GitHub Release.
+- `.github/workflows/release.yml` runs **full test matrix first** (`needs: tests`), then builds the Windows installer (which generates release notes), then creates the GitHub Release using `dist/release-notes-vX.Y.Z.md`.
 - Failed tests **block** upload — do not tag until CI is green.
 
 ## Windows installer (local)
 
 ```powershell
 cmake --build build --config Release --target stuckinthemd
-.\scripts\build-windows-installer.ps1 -SkipBuild
+.\scripts\build-windows-installer.ps1 -SkipBuild   # also writes dist/release-notes-v*.md
 ```
 
 Output: `dist/StuckInTheMD-<version>-setup.exe` (requires Inno Setup 6).
