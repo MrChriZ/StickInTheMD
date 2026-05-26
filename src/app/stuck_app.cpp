@@ -352,7 +352,7 @@ void StuckApp::start_file_watch_worker() {
     while (!file_watch_stop_.load()) {
       std::this_thread::sleep_for(std::chrono::milliseconds(1000));
       const auto change = controller_.detect_external_file_change();
-      if (change.kind == ExternalFileChange::Kind::None) {
+      if (change.kind == ExternalFileChange::Kind::NoChange) {
         continue;
       }
       if (change.kind == ExternalFileChange::Kind::AutoReloaded) {

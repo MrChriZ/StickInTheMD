@@ -137,7 +137,7 @@ TEST_CASE("AppController prompts when disk changes and editor is dirty") {
   CHECK(controller.document().is_dirty());
 
   const auto again = controller.detect_external_file_change();
-  CHECK(again.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  CHECK(again.kind == stuckinthemd::ExternalFileChange::Kind::NoChange);
 
   std::filesystem::remove(path);
 }
@@ -153,7 +153,7 @@ TEST_CASE("AppController detect ignores own save within grace period") {
   REQUIRE(saved.ok);
 
   const auto change = controller.detect_external_file_change();
-  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::NoChange);
   CHECK(controller.document().content() == "saved once");
 
   std::filesystem::remove(path);
@@ -173,7 +173,7 @@ TEST_CASE("AppController detect ignores mtime-only change when content matches")
   sleep_for_mtime();
 
   const auto change = controller.detect_external_file_change();
-  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::NoChange);
   CHECK(controller.document().content() == "stable body");
   CHECK_FALSE(controller.document().is_dirty());
 
@@ -195,7 +195,7 @@ TEST_CASE("AppController detect matches disk after literal escape normalization"
   sleep_for_mtime();
 
   const auto change = controller.detect_external_file_change();
-  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::NoChange);
 
   std::filesystem::remove(path);
 }
@@ -212,7 +212,7 @@ TEST_CASE("AppController repeated detect after save does not auto-reload") {
 
   for (int i = 0; i < 5; ++i) {
     const auto change = controller.detect_external_file_change();
-    CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+    CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::NoChange);
   }
   CHECK(controller.document().content() == "no false reload");
   CHECK_FALSE(controller.document().is_dirty());
@@ -269,7 +269,7 @@ TEST_CASE("AppController concurrent save and detect stays consistent") {
   sleep_for_mtime();
 
   const auto change = controller.detect_external_file_change();
-  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::NoChange);
   CHECK(controller.document().content() == "version 25");
   CHECK_FALSE(controller.document().is_dirty());
 

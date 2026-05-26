@@ -9,8 +9,12 @@ permissions:
   contents: write
 
 jobs:
+  tests:
+    uses: ./.github/workflows/reusable-tests.yml
+
   release-windows:
     runs-on: windows-2022
+    needs: tests
     steps:
       - uses: actions/checkout@v4
 
