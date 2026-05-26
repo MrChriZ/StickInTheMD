@@ -1,0 +1,17 @@
+---
+description: C++ and cross-platform pitfalls for this codebase
+globs: "{src,include,tests}/**/*.{cpp,hpp}"
+alwaysApply: false
+---
+
+# C++ conventions (StuckInTheMD)
+
+- C++20, minimal scope, match existing style; reuse `AppController`, `DocumentStore`, `json_escape` / `bind_first_arg`.
+- **Linux + X11:** never name enums or identifiers `None` — X11 defines `None` as `0`. Use `NoChange` (see `external_file_change.hpp`).
+- **Disk vs editor text:** load path uses `normalize_document_text`; compare normalized content in `detect_external_file_change`. `update_content` does not normalize (editor bytes).
+- **`sync_disk_state`:** do not clear `disk_mtime_` before reading mtime (race with file-watch thread).
+- **Webview binds:** return raw strings/objects from sync binds — `webview::resolve` JSON-encodes once (never `json_escape` the return). Use `markdown_from_bind_request` for markdown args.
+- **Preview:** HTML via `iframe srcdoc`, not `file://` in `iframe.src` (blocked in WebView2 subframes).
+- **UI sync from C++:** `publish_document_to_ui` → `window.applyDocument`; JS skips work if path+content unchanged (avoids preview cancel loop).
+
+New behavior for external files → extend `AppController` + tests in `test_app_controller.cpp` before UI wiring in `stuck_app.cpp`.

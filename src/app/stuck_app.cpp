@@ -1,7 +1,6 @@
 #include "stuckinthemd/stuck_app.hpp"
 
 #include "stuckinthemd/assets.hpp"
-#include "stuckinthemd/html_builder.hpp"
 #include "stuckinthemd/file_dialogs.hpp"
 #include "stuckinthemd/json_util.hpp"
 #include "stuckinthemd/color_theme.hpp"
@@ -140,15 +139,12 @@ void StuckApp::update_window_title() {
 
 void StuckApp::setup_bindings() {
   webview_->bind("renderMarkdown", [this](const std::string &req) -> std::string {
-    const auto markdown = decode_bind_arg_at(req, 0);
+    const auto markdown = markdown_from_bind_request(req);
     const auto appearance = decode_bind_arg_at(req, 1);
     const bool dark = appearance == "dark";
-    const auto html = controller_.preview_html_for(markdown, dark);
-    const auto preview_path = temp_dir() / "preview.html";
-    if (!write_temp_html(preview_path, html)) {
-      return json_escape(std::string{});
-    }
-    return json_escape(path_to_file_url(preview_path));
+    // Return raw HTML; webview::resolve JSON-encodes once. Do not json_escape here.
+    // Preview uses iframe srcdoc (file:// subframes are blocked in WebView2).
+    return controller_.preview_html_for(markdown, dark);
   });
 
   webview_->bind("getBootDocument", [this](const std::string &) -> std::string {

@@ -780,10 +780,10 @@
     async function renderPreview() {
       const gen = ++previewGen;
       try {
-        const previewUrl = await window.renderMarkdown(editor.value, resolvedAppearance());
+        const html = await window.renderMarkdown(editor.value, resolvedAppearance());
         if (gen !== previewGen) return;
-        preview.removeAttribute("srcdoc");
-        preview.src = previewUrl || "about:blank";
+        preview.removeAttribute("src");
+        preview.srcdoc = html || "<!DOCTYPE html><html><body></body></html>";
       } catch (err) {
         if (gen === previewGen) setStatus("Preview failed");
       }
