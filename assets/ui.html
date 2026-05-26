@@ -973,8 +973,15 @@
     });
 
     window.applyDocument = (path, content) => {
-      currentPath = path || "";
-      editor.value = content || "";
+      const nextPath = path || "";
+      const nextContent = content || "";
+      const samePath = (currentPath || "") === nextPath;
+      const sameContent = editor.value === nextContent;
+      if (samePath && sameContent) {
+        return;
+      }
+      currentPath = nextPath;
+      editor.value = nextContent;
       markClean(currentPath);
       rememberRecentPath(currentPath);
       scheduleRender();

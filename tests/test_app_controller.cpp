@@ -2,9 +2,26 @@
 
 #include "stuckinthemd/app_controller.hpp"
 
+#include <atomic>
 #include <filesystem>
 #include <fstream>
+#include <string>
 #include <thread>
+
+namespace {
+
+void write_bytes(const std::filesystem::path &path, const std::string &content) {
+  std::ofstream out(path, std::ios::binary | std::ios::trunc);
+  REQUIRE(out.good());
+  out.write(content.data(), static_cast<std::streamsize>(content.size()));
+  REQUIRE(out.good());
+}
+
+void sleep_for_mtime() {
+  std::this_thread::sleep_for(std::chrono::milliseconds(1100));
+}
+
+} // namespace
 
 TEST_CASE("AppController renders preview html from markdown") {
   stuckinthemd::AppController controller;
@@ -121,6 +138,140 @@ TEST_CASE("AppController prompts when disk changes and editor is dirty") {
 
   const auto again = controller.detect_external_file_change();
   CHECK(again.kind == stuckinthemd::ExternalFileChange::Kind::None);
+
+  std::filesystem::remove(path);
+}
+
+TEST_CASE("AppController detect ignores own save within grace period") {
+  const auto path =
+      std::filesystem::temp_directory_path() / "stuckinthemd_own_save_grace.md";
+  std::filesystem::remove(path);
+
+  stuckinthemd::AppController controller;
+  controller.update_content("saved once");
+  const auto saved = controller.save_as_path(path);
+  REQUIRE(saved.ok);
+
+  const auto change = controller.detect_external_file_change();
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  CHECK(controller.document().content() == "saved once");
+
+  std::filesystem::remove(path);
+}
+
+TEST_CASE("AppController detect ignores mtime-only change when content matches") {
+  const auto path =
+      std::filesystem::temp_directory_path() / "stuckinthemd_mtime_only.md";
+  std::filesystem::remove(path);
+
+  stuckinthemd::AppController controller;
+  controller.update_content("stable body");
+  REQUIRE(controller.save_as_path(path).ok);
+  sleep_for_mtime();
+
+  write_bytes(path, "stable body");
+  sleep_for_mtime();
+
+  const auto change = controller.detect_external_file_change();
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  CHECK(controller.document().content() == "stable body");
+  CHECK_FALSE(controller.document().is_dirty());
+
+  std::filesystem::remove(path);
+}
+
+TEST_CASE("AppController detect matches disk after literal escape normalization") {
+  const auto path =
+      std::filesystem::temp_directory_path() / "stuckinthemd_literal_newlines.md";
+  std::filesystem::remove(path);
+
+  const std::string literal_on_disk = "# Hello\\n\\nLine two";
+  write_bytes(path, literal_on_disk);
+
+  stuckinthemd::AppController controller;
+  const auto opened = controller.open_path(path);
+  REQUIRE(opened.ok);
+  CHECK(controller.document().content().find('\n') != std::string::npos);
+  sleep_for_mtime();
+
+  const auto change = controller.detect_external_file_change();
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+
+  std::filesystem::remove(path);
+}
+
+TEST_CASE("AppController repeated detect after save does not auto-reload") {
+  const auto path =
+      std::filesystem::temp_directory_path() / "stuckinthemd_detect_stable.md";
+  std::filesystem::remove(path);
+
+  stuckinthemd::AppController controller;
+  controller.update_content("no false reload");
+  REQUIRE(controller.save_as_path(path).ok);
+  sleep_for_mtime();
+
+  for (int i = 0; i < 5; ++i) {
+    const auto change = controller.detect_external_file_change();
+    CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  }
+  CHECK(controller.document().content() == "no false reload");
+  CHECK_FALSE(controller.document().is_dirty());
+
+  std::filesystem::remove(path);
+}
+
+TEST_CASE("AppController reload_from_disk is idempotent and stays clean") {
+  const auto path =
+      std::filesystem::temp_directory_path() / "stuckinthemd_reload_idempotent.md";
+  std::filesystem::remove(path);
+
+  stuckinthemd::AppController controller;
+  controller.update_content("same bytes");
+  REQUIRE(controller.save_as_path(path).ok);
+
+  controller.reload_from_disk("same bytes");
+  CHECK(controller.document().content() == "same bytes");
+  CHECK_FALSE(controller.document().is_dirty());
+
+  controller.reload_from_disk(controller.document().content());
+  CHECK_FALSE(controller.document().is_dirty());
+
+  std::filesystem::remove(path);
+}
+
+TEST_CASE("AppController concurrent save and detect stays consistent") {
+  const auto path =
+      std::filesystem::temp_directory_path() / "stuckinthemd_save_detect_race.md";
+  std::filesystem::remove(path);
+
+  stuckinthemd::AppController controller;
+  controller.update_content("v0");
+  REQUIRE(controller.save_as_path(path).ok);
+
+  std::atomic<bool> stop{false};
+  std::thread watcher([&] {
+    while (!stop.load()) {
+      controller.detect_external_file_change();
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+  });
+
+  for (int i = 1; i <= 25; ++i) {
+    const std::string content = "version " + std::to_string(i);
+    controller.update_content(content);
+    const auto saved = controller.save();
+    REQUIRE(saved.ok);
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+  }
+
+  stop = true;
+  watcher.join();
+  sleep_for_mtime();
+
+  const auto change = controller.detect_external_file_change();
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::None);
+  CHECK(controller.document().content() == "version 25");
+  CHECK_FALSE(controller.document().is_dirty());
 
   std::filesystem::remove(path);
 }

@@ -348,6 +348,7 @@ void StuckApp::stop_autosave_worker() {
 void StuckApp::start_file_watch_worker() {
   file_watch_stop_ = false;
   file_watch_thread_ = std::thread([this] {
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     while (!file_watch_stop_.load()) {
       std::this_thread::sleep_for(std::chrono::milliseconds(1000));
       const auto change = controller_.detect_external_file_change();

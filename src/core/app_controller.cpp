@@ -59,19 +59,24 @@ void AppController::new_document() {
 }
 
 void AppController::sync_disk_state() {
-  disk_mtime_ = std::nullopt;
   if (!document_.has_path()) {
+    disk_mtime_ = std::nullopt;
     return;
   }
   std::error_code ec;
   const auto mtime = std::filesystem::last_write_time(*document_.path(), ec);
   if (!ec) {
     disk_mtime_ = mtime;
+  } else {
+    disk_mtime_ = std::nullopt;
   }
 }
 
 void AppController::reload_from_disk(const std::string &content) {
-  document_.set_content(normalize_document_text(content));
+  const auto normalized = normalize_document_text(content);
+  if (document_.content() != normalized) {
+    document_.set_content(normalized);
+  }
   document_.mark_clean();
   sync_disk_state();
 }
@@ -110,7 +115,8 @@ ExternalFileChange AppController::detect_external_file_change() {
     return change;
   }
 
-  if (loaded.content == document_.content()) {
+  if (loaded.content ==
+      normalize_document_text(document_.content())) {
     disk_mtime_ = mtime;
     return change;
   }
