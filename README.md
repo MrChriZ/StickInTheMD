@@ -1,6 +1,6 @@
 # StickInTheMD
 
-![CI](https://github.com/YOUR_GITHUB_USERNAME/StickInTheMD/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/MrChriZ/StickInTheMD/actions/workflows/ci.yml/badge.svg)
 
 A lightweight, cross-platform Markdown editor with live preview.
 
