@@ -47,4 +47,13 @@ pick_save_markdown(const std::filesystem::path &suggested) {
   return from_dialog(path);
 }
 
+bool confirm_reload_externally_modified(const std::filesystem::path &path) {
+  const std::string message =
+      "This file was changed outside StuckInTheMD:\n\n" + path.string() +
+      "\n\nReload from disk? Unsaved changes in the editor will be lost.";
+  const int choice = tinyfd_messageBox(
+      "File changed on disk", message.c_str(), "yesno", "question", 1);
+  return choice == 1;
+}
+
 } // namespace stuckinthemd

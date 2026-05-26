@@ -44,7 +44,10 @@ std::filesystem::path temp_dir() {
 
 StuckApp::StuckApp() = default;
 
-StuckApp::~StuckApp() { stop_autosave_worker(); }
+StuckApp::~StuckApp() {
+  stop_file_watch_worker();
+  stop_autosave_worker();
+}
 
 bool StuckApp::write_temp_html(const std::filesystem::path &path,
                              const std::string &html) const {
@@ -98,6 +101,21 @@ std::string build_settings_json(const AppController &controller) {
 }
 
 } // namespace
+
+void StuckApp::publish_document_to_ui(const char *status_message) {
+  if (!webview_) {
+    return;
+  }
+  const auto &doc = controller_.document();
+  const std::string path_json =
+      doc.has_path() ? json_escape(doc.path()->string()) : json_escape("");
+  webview_->eval("window.applyDocument(" + path_json + "," +
+                 json_escape(doc.content()) + ");");
+  update_window_title();
+  if (status_message != nullptr && status_message[0] != '\0') {
+    webview_->eval("window.showMessage(" + json_escape(status_message) + ");");
+  }
+}
 
 void StuckApp::update_window_title() {
   if (!webview_) {
@@ -327,6 +345,43 @@ void StuckApp::stop_autosave_worker() {
   }
 }
 
+void StuckApp::start_file_watch_worker() {
+  file_watch_stop_ = false;
+  file_watch_thread_ = std::thread([this] {
+    while (!file_watch_stop_.load()) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+      const auto change = controller_.detect_external_file_change();
+      if (change.kind == ExternalFileChange::Kind::None) {
+        continue;
+      }
+      if (change.kind == ExternalFileChange::Kind::AutoReloaded) {
+        webview_->dispatch([this] {
+          publish_document_to_ui("Reloaded from disk");
+        });
+        continue;
+      }
+      webview_->dispatch([this, change] {
+        const auto path = controller_.document().has_path()
+                              ? *controller_.document().path()
+                              : std::filesystem::path{};
+        if (confirm_reload_externally_modified(path)) {
+          controller_.reload_from_disk(change.disk_content);
+          publish_document_to_ui("Reloaded from disk");
+        } else {
+          controller_.acknowledge_external_revision(change.mtime);
+        }
+      });
+    }
+  });
+}
+
+void StuckApp::stop_file_watch_worker() {
+  file_watch_stop_ = true;
+  if (file_watch_thread_.joinable()) {
+    file_watch_thread_.join();
+  }
+}
+
 int StuckApp::run(int argc, char *argv[]) {
   if (argc > 1) {
     const std::filesystem::path arg_path = argv[1];
@@ -343,6 +398,7 @@ int StuckApp::run(int argc, char *argv[]) {
 
   setup_bindings();
   start_autosave_worker();
+  start_file_watch_worker();
 
   webview_->set_html(load_ui_html());
   update_window_title();
@@ -350,6 +406,7 @@ int StuckApp::run(int argc, char *argv[]) {
       "window.boot(" + build_settings_json(controller_) + ");");
 
   webview_->run();
+  stop_file_watch_worker();
   stop_autosave_worker();
   return 0;
 }

@@ -3,6 +3,7 @@
 #include "stuckinthemd/app_settings.hpp"
 #include "stuckinthemd/autosave_controller.hpp"
 #include "stuckinthemd/document.hpp"
+#include "stuckinthemd/external_file_change.hpp"
 #include "stuckinthemd/document_store.hpp"
 #include "stuckinthemd/html_builder.hpp"
 #include "stuckinthemd/markdown_renderer.hpp"
@@ -52,6 +53,13 @@ public:
   SaveResultInfo perform_autosave();
   void note_autosave(std::chrono::steady_clock::time_point now);
 
+  /** Re-read last-write time from disk (after open, save, or reload). */
+  void sync_disk_state();
+  void reload_from_disk(const std::string &content);
+  ExternalFileChange detect_external_file_change();
+  void acknowledge_external_revision(
+      const std::filesystem::file_time_type &mtime);
+
 private:
   Document document_;
   DocumentStore store_;
@@ -60,6 +68,9 @@ private:
   AppSettings settings_;
   std::chrono::steady_clock::time_point last_autosave_ =
       std::chrono::steady_clock::now();
+  std::optional<std::filesystem::file_time_type> disk_mtime_;
+  std::chrono::steady_clock::time_point last_own_write_ =
+      std::chrono::steady_clock::time_point::min();
 };
 
 } // namespace stuckinthemd

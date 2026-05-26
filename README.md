@@ -14,6 +14,7 @@ Built with **modern C++20**, a small native core, and your operating system's bu
 - **Drag and drop** — drop `.md` or text files onto the window to open
 - **Save / Save As** — native file dialogs
 - **Auto-save** — optional, every 2 seconds when the file has a path
+- **External changes** — reloads automatically when the file changes on disk; if you have unsaved edits, asks whether to reload
 - **Print** — system print dialog via a print-optimized page
 - **Export PDF** — saves via Edge/Chrome or `wkhtmltopdf` when installed; otherwise opens the print dialog (choose **Save as PDF** there)
 - **Focus mode** — cycle Split / Editor-only / Preview-only; F11 hides the toolbar

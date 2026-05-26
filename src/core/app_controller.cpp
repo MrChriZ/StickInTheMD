@@ -55,6 +55,77 @@ void AppController::new_document() {
   document_ = Document{};
   document_.set_content("");
   document_.mark_clean();
+  disk_mtime_ = std::nullopt;
+}
+
+void AppController::sync_disk_state() {
+  disk_mtime_ = std::nullopt;
+  if (!document_.has_path()) {
+    return;
+  }
+  std::error_code ec;
+  const auto mtime = std::filesystem::last_write_time(*document_.path(), ec);
+  if (!ec) {
+    disk_mtime_ = mtime;
+  }
+}
+
+void AppController::reload_from_disk(const std::string &content) {
+  document_.set_content(normalize_document_text(content));
+  document_.mark_clean();
+  sync_disk_state();
+}
+
+void AppController::acknowledge_external_revision(
+    const std::filesystem::file_time_type &mtime) {
+  disk_mtime_ = mtime;
+}
+
+ExternalFileChange AppController::detect_external_file_change() {
+  ExternalFileChange change;
+  if (!document_.has_path()) {
+    return change;
+  }
+
+  const auto &path = *document_.path();
+  std::error_code ec;
+  if (!std::filesystem::is_regular_file(path, ec)) {
+    return change;
+  }
+
+  const auto now = std::chrono::steady_clock::now();
+  if (last_own_write_ != std::chrono::steady_clock::time_point::min() &&
+      now - last_own_write_ < std::chrono::milliseconds(750)) {
+    return change;
+  }
+
+  const auto mtime = std::filesystem::last_write_time(path, ec);
+  if (ec || (disk_mtime_.has_value() && *disk_mtime_ == mtime)) {
+    return change;
+  }
+
+  const auto loaded = store_.load(path);
+  if (!loaded.ok) {
+    disk_mtime_ = mtime;
+    return change;
+  }
+
+  if (loaded.content == document_.content()) {
+    disk_mtime_ = mtime;
+    return change;
+  }
+
+  if (!document_.is_dirty()) {
+    reload_from_disk(loaded.content);
+    change.kind = ExternalFileChange::Kind::AutoReloaded;
+    return change;
+  }
+
+  change.kind = ExternalFileChange::Kind::NeedsReloadConfirmation;
+  change.disk_content = loaded.content;
+  change.mtime = mtime;
+  disk_mtime_ = mtime;
+  return change;
 }
 
 OpenResult AppController::open_path(const std::filesystem::path &path) {
@@ -66,6 +137,7 @@ OpenResult AppController::open_path(const std::filesystem::path &path) {
   }
   document_ = Document{path, loaded.content};
   document_.mark_clean();
+  sync_disk_state();
   result.ok = true;
   result.path = path;
   return result;
@@ -109,6 +181,8 @@ SaveResultInfo AppController::save_as_path(const std::filesystem::path &path) {
   }
   document_.set_path(path);
   document_.mark_clean();
+  last_own_write_ = std::chrono::steady_clock::now();
+  sync_disk_state();
   result.ok = true;
   result.path = path;
   return result;

@@ -12,4 +12,6 @@ std::optional<std::filesystem::path> pick_open_markdown();
 std::optional<std::filesystem::path> pick_save_markdown(
     const std::filesystem::path &suggested = {});
 
+bool confirm_reload_externally_modified(const std::filesystem::path &path);
+
 } // namespace stuckinthemd

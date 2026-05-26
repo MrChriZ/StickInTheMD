@@ -3,6 +3,7 @@
 #include "stuckinthemd/app_controller.hpp"
 
 #include <filesystem>
+#include <fstream>
 #include <thread>
 
 TEST_CASE("AppController renders preview html from markdown") {
@@ -68,4 +69,58 @@ TEST_CASE("AppController autosave triggers only when dirty and timed") {
   std::this_thread::sleep_for(std::chrono::milliseconds(20));
   const auto now = std::chrono::steady_clock::now();
   CHECK(controller.should_autosave(now));
+}
+
+TEST_CASE("AppController auto-reloads when disk changes and editor is clean") {
+  const auto path =
+      std::filesystem::temp_directory_path() / "stuckinthemd_external_watch.md";
+  std::filesystem::remove(path);
+
+  stuckinthemd::AppController controller;
+  controller.update_content("version one");
+  controller.save_as_path(path);
+  std::this_thread::sleep_for(std::chrono::milliseconds(1100));
+
+  {
+    std::ofstream out(path, std::ios::trunc);
+    out << "version two";
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(1100));
+
+  const auto change = controller.detect_external_file_change();
+  CHECK(change.kind == stuckinthemd::ExternalFileChange::Kind::AutoReloaded);
+  CHECK(controller.document().content() == "version two");
+  CHECK_FALSE(controller.document().is_dirty());
+
+  std::filesystem::remove(path);
+}
+
+TEST_CASE("AppController prompts when disk changes and editor is dirty") {
+  const auto path =
+      std::filesystem::temp_directory_path() / "stuckinthemd_external_dirty.md";
+  std::filesystem::remove(path);
+
+  stuckinthemd::AppController controller;
+  controller.update_content("saved baseline");
+  controller.save_as_path(path);
+  controller.update_content("local edits");
+  std::this_thread::sleep_for(std::chrono::milliseconds(1100));
+
+  {
+    std::ofstream out(path, std::ios::trunc);
+    out << "on disk";
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(1100));
+
+  const auto change = controller.detect_external_file_change();
+  CHECK(change.kind ==
+        stuckinthemd::ExternalFileChange::Kind::NeedsReloadConfirmation);
+  CHECK(change.disk_content == "on disk");
+  CHECK(controller.document().content() == "local edits");
+  CHECK(controller.document().is_dirty());
+
+  const auto again = controller.detect_external_file_change();
+  CHECK(again.kind == stuckinthemd::ExternalFileChange::Kind::None);
+
+  std::filesystem::remove(path);
 }
