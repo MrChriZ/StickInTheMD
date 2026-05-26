@@ -1,0 +1,30 @@
+#include <winver.h>
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION @STUCKINTHEMD_VERSION_COMMA@,0
+ PRODUCTVERSION @STUCKINTHEMD_VERSION_COMMA@,0
+ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+ FILEFLAGS 0
+ FILEOS VOS_NT_WINDOWS32
+ FILETYPE VFT_APP
+ FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "Leftoverbits.co.uk"
+            VALUE "FileDescription", "StuckInTheMD Markdown Editor"
+            VALUE "FileVersion", "@STUCKINTHEMD_VERSION@"
+            VALUE "InternalName", "stuckinthemd"
+            VALUE "LegalCopyright", "Copyright (C) Leftoverbits.co.uk"
+            VALUE "OriginalFilename", "stuckinthemd.exe"
+            VALUE "ProductName", "StuckInTheMD"
+            VALUE "ProductVersion", "@STUCKINTHEMD_VERSION@"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

@@ -9,6 +9,15 @@ if(WIN32)
     set_source_files_properties("${STUCKINTHEMD_WIN_RC}" PROPERTIES
       OBJECT_DEPENDS "${STUCKINTHEMD_ICON_DIR}/stuckinthemd.ico")
   endif()
+  if(MSVC)
+    string(REPLACE "." "," STUCKINTHEMD_VERSION_COMMA "${PROJECT_VERSION}")
+    set(STUCKINTHEMD_VERSION "${PROJECT_VERSION}")
+    configure_file(
+      "${CMAKE_SOURCE_DIR}/resources/windows/version.rc.in"
+      "${CMAKE_BINARY_DIR}/generated/stuckinthemd_version.rc"
+      @ONLY)
+    target_sources(stuckinthemd PRIVATE "${CMAKE_BINARY_DIR}/generated/stuckinthemd_version.rc")
+  endif()
 endif()
 
 if(APPLE)

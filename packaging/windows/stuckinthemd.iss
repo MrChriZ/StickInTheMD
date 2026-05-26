@@ -11,7 +11,8 @@
 #endif
 
 #define MyAppName "StuckInTheMD"
-#define MyAppPublisher "StuckInTheMD"
+#define MyAppPublisher "Leftoverbits.co.uk"
+#define MyAppPublisherURL "https://leftoverbits.co.uk"
 #define MyAppExeName "stuckinthemd.exe"
 #define MyAppProgId "StuckInTheMDMarkdown"
 
@@ -20,7 +21,16 @@ AppId={{E8C4A21D-9F6B-4D2E-A1C3-5B7D8E9F0A1B}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
+AppPublisherURL={#MyAppPublisherURL}
+AppSupportURL={#MyAppPublisherURL}
+AppUpdatesURL={#MyAppPublisherURL}
 DefaultDirName={autopf}\{#MyAppName}
+VersionInfoCompany={#MyAppPublisher}
+VersionInfoDescription={#MyAppName} Setup
+VersionInfoCopyright=Copyright (C) {#MyAppPublisher}
+VersionInfoProductName={#MyAppName}
+VersionInfoProductVersion={#MyAppVersion}
+VersionInfoVersion={#MyAppVersion}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=LICENSE.txt

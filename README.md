@@ -108,6 +108,8 @@ cmake --build build --config Release --target stuckinthemd_installer
 
 **Windows 10:** install the [WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/) if the app window does not appear (one-time, shared by other apps).
 
+The installer lists **Leftoverbits.co.uk** as publisher. Removing SmartScreen’s “Unknown publisher” warning requires an [Authenticode](https://learn.microsoft.com/en-us/windows/win32/seccrypto/cryptography-tools) code-signing certificate; see `; SignTool=` in [`packaging/windows/stuckinthemd.iss`](packaging/windows/stuckinthemd.iss).
+
 ### Linux (Debian/Ubuntu)
 
 ```bash
