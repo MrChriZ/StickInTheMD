@@ -8,6 +8,8 @@ A lightweight, cross-platform Markdown editor with live preview.
 
 Built with **modern C++20**, a small native core, and your operating system's built-in webview (no bundled Chromium/Electron).
 
+**Project site:** [mrchriz.github.io/StuckInTheMD](https://mrchriz.github.io/StuckInTheMD/) (GitHub Pages)
+
 ## Features
 
 - **Live preview** — edit Markdown on the left, formatted HTML on the right
