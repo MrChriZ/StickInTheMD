@@ -4,6 +4,8 @@
 
 A lightweight, cross-platform Markdown editor with live preview.
 
+![StickInTheMD — split editor with live preview](assets/screenshot.png)
+
 Built with **modern C++20**, a small native core, and your operating system's built-in webview (no bundled Chromium/Electron).
 
 ## Features
