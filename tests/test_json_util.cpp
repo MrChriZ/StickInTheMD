@@ -1,5 +1,6 @@
 #include <doctest/doctest.h>
 
+#include "stuckinthemd/html_builder.hpp"
 #include "stuckinthemd/json_util.hpp"
 
 TEST_CASE("json_escape handles quotes and newlines") {
@@ -26,4 +27,14 @@ TEST_CASE("markdown_from_bind_request accepts JSON or raw text") {
 TEST_CASE("bind_first_arg preserves quotes in decoded markdown") {
   const std::string md = "Choose \"Save as PDF\" here.";
   CHECK(stuckinthemd::bind_first_arg(md) == md);
+}
+
+TEST_CASE("json_escape preview HTML is valid for webview bind round-trip") {
+  stuckinthemd::HtmlBuilder builder;
+  const auto page = builder.preview_page(
+      "<h1>Title</h1><p>\"quoted\" &amp; <img src=\"x\"></p>", true);
+  const auto encoded = stuckinthemd::json_escape(page);
+  CHECK(encoded.front() == '"');
+  CHECK(encoded.back() == '"');
+  CHECK(stuckinthemd::parse_json_string(encoded) == page);
 }

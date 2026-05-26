@@ -1,0 +1,21 @@
+---
+description: StuckInTheMD repo layout, naming, and where code lives
+alwaysApply: true
+---
+
+# StuckInTheMD project map
+
+- **Repo:** [MrChriZ/StuckInTheMD](https://github.com/MrChriZ/StuckInTheMD) — C++20 Markdown editor, OS webview (not Electron).
+- **Namespace / binary:** `stuckinthemd`, `stuckinthemd.exe`
+- **Version:** single source in `CMakeLists.txt` → `project(StuckInTheMD VERSION …)` (title bar, installer name).
+
+| Area | Path |
+|------|------|
+| App entry + webview bindings | `src/app/stuck_app.cpp`, `include/stuckinthemd/stuck_app.hpp` |
+| Document / save / external file watch | `src/core/app_controller.cpp` |
+| UI (embedded at configure time) | `assets/ui.html` → `build/generated/ui_embedded.cpp` |
+| Tests | `tests/`, target `stuckinthemd_tests` |
+| Third-party (bootstrap, do not commit clones) | `scripts/bootstrap-third-party.sh`, `third_party/` |
+| CI workflows | `.github/workflows/ci.yml`, `reusable-tests.yml`, `release.yml` |
+
+Do not commit `build/`, `dist/`, or bootstrapped `third_party/{md4c,webview,doctest}/` trees.

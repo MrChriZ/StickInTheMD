@@ -1,0 +1,34 @@
+---
+description: CI, releases, installers, and deploy checklist
+alwaysApply: true
+---
+
+# CI and releases
+
+## CI (every push/PR to `main`)
+
+- Workflow: `.github/workflows/ci.yml` → calls `reusable-tests.yml` (Linux, macOS, Windows).
+- Badge in README tracks `ci.yml` on `main` (~3–5 min; badge cache can lag).
+
+## Release checklist
+
+1. `.\scripts\run-tests.ps1` or `bash scripts/run-tests.sh`
+2. Push to `main` — wait for **CI** green
+3. Bump `project(StuckInTheMD VERSION …)` in `CMakeLists.txt`, commit, push
+4. `git tag vX.Y.Z && git push origin vX.Y.Z`
+
+## Release workflow (on `v*` tags)
+
+- `.github/workflows/release.yml` runs **full test matrix first** (`needs: tests`), then builds Windows installer and creates GitHub Release.
+- Failed tests **block** upload — do not tag until CI is green.
+
+## Windows installer (local)
+
+```powershell
+cmake --build build --config Release --target stuckinthemd
+.\scripts\build-windows-installer.ps1 -SkipBuild
+```
+
+Output: `dist/StuckInTheMD-<version>-setup.exe` (requires Inno Setup 6).
+
+Do not force-push tags or amend pushed release commits unless the user asks.

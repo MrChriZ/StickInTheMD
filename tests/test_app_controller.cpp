@@ -275,3 +275,35 @@ TEST_CASE("AppController concurrent save and detect stays consistent") {
 
   std::filesystem::remove(path);
 }
+
+TEST_CASE("AppController preview_html_for embeds README-style local images") {
+  const auto root =
+      std::filesystem::temp_directory_path() / "stuckinthemd_readme_preview";
+  const auto assets = root / "assets";
+  std::filesystem::remove_all(root);
+  std::filesystem::create_directories(assets);
+
+  static const unsigned char k_png[] = {
+      0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
+      0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+      0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00,
+      0x0A, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
+      0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49,
+      0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82};
+  {
+    std::ofstream png(assets / "screenshot.png", std::ios::binary);
+    png.write(reinterpret_cast<const char *>(k_png), sizeof(k_png));
+  }
+
+  const auto readme = root / "README.md";
+  write_bytes(readme, "![preview](assets/screenshot.png)\n");
+
+  stuckinthemd::AppController controller;
+  const auto opened = controller.open_path(readme);
+  REQUIRE(opened.ok);
+
+  const auto html = controller.preview_html();
+  CHECK(html.find("data:image/png;base64,") != std::string::npos);
+
+  std::filesystem::remove_all(root);
+}

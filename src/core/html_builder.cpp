@@ -2,7 +2,11 @@
 
 #include <cctype>
 #include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <optional>
 #include <system_error>
+#include <vector>
 
 namespace stuckinthemd {
 
@@ -31,7 +35,167 @@ std::string base_tag_for_dir(const std::filesystem::path &resource_dir) {
   return "<base href=\"" + path_to_file_url(resource_dir) + "\">";
 }
 
+bool is_non_embeddable_src(const std::string &src) {
+  if (src.empty()) {
+    return true;
+  }
+  const auto lower = [](char c) { return static_cast<char>(std::tolower(static_cast<unsigned char>(c))); };
+  auto starts = [&](const char *prefix) {
+    const size_t n = std::strlen(prefix);
+    if (src.size() < n) {
+      return false;
+    }
+    for (size_t i = 0; i < n; ++i) {
+      if (lower(src[i]) != lower(prefix[i])) {
+        return false;
+      }
+    }
+    return true;
+  };
+  return starts("http://") || starts("https://") || starts("data:") ||
+         starts("file://") || starts("//");
+}
+
+std::string mime_for_image_path(const std::filesystem::path &path) {
+  const auto ext = path.extension().string();
+  std::string lower;
+  lower.reserve(ext.size());
+  for (char c : ext) {
+    lower.push_back(
+        static_cast<char>(std::tolower(static_cast<unsigned char>(c))));
+  }
+  if (lower == ".jpg" || lower == ".jpeg") {
+    return "image/jpeg";
+  }
+  if (lower == ".gif") {
+    return "image/gif";
+  }
+  if (lower == ".webp") {
+    return "image/webp";
+  }
+  if (lower == ".svg") {
+    return "image/svg+xml";
+  }
+  if (lower == ".bmp") {
+    return "image/bmp";
+  }
+  return "image/png";
+}
+
+std::string base64_encode(const std::vector<unsigned char> &bytes) {
+  static constexpr char k_table[] =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  std::string out;
+  out.reserve(((bytes.size() + 2) / 3) * 4);
+  size_t i = 0;
+  while (i + 2 < bytes.size()) {
+    const unsigned n =
+        (static_cast<unsigned>(bytes[i]) << 16) |
+        (static_cast<unsigned>(bytes[i + 1]) << 8) |
+        static_cast<unsigned>(bytes[i + 2]);
+    out.push_back(k_table[(n >> 18) & 63]);
+    out.push_back(k_table[(n >> 12) & 63]);
+    out.push_back(k_table[(n >> 6) & 63]);
+    out.push_back(k_table[n & 63]);
+    i += 3;
+  }
+  if (i < bytes.size()) {
+    unsigned n = static_cast<unsigned>(bytes[i]) << 16;
+    if (i + 1 < bytes.size()) {
+      n |= static_cast<unsigned>(bytes[i + 1]) << 8;
+    }
+    out.push_back(k_table[(n >> 18) & 63]);
+    out.push_back(k_table[(n >> 12) & 63]);
+    out.push_back(i + 1 < bytes.size() ? k_table[(n >> 6) & 63] : '=');
+    out.push_back('=');
+  }
+  return out;
+}
+
+std::optional<std::string>
+read_image_data_uri(const std::filesystem::path &path) {
+  constexpr std::size_t k_max_bytes = 10 * 1024 * 1024;
+  std::error_code ec;
+  if (!std::filesystem::is_regular_file(path, ec)) {
+    return std::nullopt;
+  }
+  const auto size = std::filesystem::file_size(path, ec);
+  if (ec || size == 0 || size > k_max_bytes) {
+    return std::nullopt;
+  }
+  std::ifstream in(path, std::ios::binary);
+  if (!in) {
+    return std::nullopt;
+  }
+  std::vector<unsigned char> bytes(static_cast<std::size_t>(size));
+  in.read(reinterpret_cast<char *>(bytes.data()),
+          static_cast<std::streamsize>(bytes.size()));
+  if (!in.good()) {
+    return std::nullopt;
+  }
+  return "data:" + mime_for_image_path(path) + ";base64," + base64_encode(bytes);
+}
+
+std::filesystem::path resolve_image_path(const std::string &src,
+                                         const std::filesystem::path &resource_dir) {
+  std::filesystem::path relative(src);
+  if (relative.is_absolute()) {
+    return relative;
+  }
+  const bool windows_drive = src.size() >= 2 && std::isalpha(static_cast<unsigned char>(src[0])) != 0 &&
+                             src[1] == ':';
+  if (windows_drive) {
+    return relative;
+  }
+  return resource_dir / relative;
+}
+
+std::string embed_local_images_for_preview_impl(
+    const std::string &body_html, const std::filesystem::path &resource_dir) {
+  if (resource_dir.empty()) {
+    return body_html;
+  }
+  std::string html = body_html;
+  size_t pos = 0;
+  while (true) {
+    const size_t img = html.find("<img", pos);
+    if (img == std::string::npos) {
+      break;
+    }
+    const size_t src_attr = html.find("src=\"", img);
+    if (src_attr == std::string::npos || src_attr > img + 80) {
+      pos = img + 4;
+      continue;
+    }
+    const size_t val_start = src_attr + 5;
+    const size_t val_end = html.find('"', val_start);
+    if (val_end == std::string::npos) {
+      pos = img + 4;
+      continue;
+    }
+    const std::string src = html.substr(val_start, val_end - val_start);
+    if (is_non_embeddable_src(src)) {
+      pos = val_end;
+      continue;
+    }
+    const auto file_path = resolve_image_path(src, resource_dir);
+    const auto data_uri = read_image_data_uri(file_path);
+    if (!data_uri) {
+      pos = val_end;
+      continue;
+    }
+    html.replace(val_start, val_end - val_start, *data_uri);
+    pos = val_start + data_uri->size();
+  }
+  return html;
+}
+
 } // namespace
+
+std::string embed_local_images_for_preview(
+    const std::string &body_html, const std::filesystem::path &resource_dir) {
+  return embed_local_images_for_preview_impl(body_html, resource_dir);
+}
 
 std::string path_to_file_url(const std::filesystem::path &path) {
   std::error_code ec;
@@ -122,9 +286,13 @@ pre, code { font-family: Consolas, monospace; font-size: 9pt; }
 std::string HtmlBuilder::preview_page(const std::string &body_html, const bool dark,
                                       const std::filesystem::path &resource_dir) const {
   const char *theme_attr = dark ? " data-theme=\"dark\"" : "";
+  std::string body = body_html;
+  if (!resource_dir.empty()) {
+    body = embed_local_images_for_preview(body_html, resource_dir);
+  }
   return std::string("<!DOCTYPE html><html") + theme_attr +
          "><head><meta charset=\"utf-8\">" + base_tag_for_dir(resource_dir) +
-         "<style>" + k_preview_css + "</style></head><body>" + body_html +
+         "<style>" + k_preview_css + "</style></head><body>" + body +
          "</body></html>";
 }
 

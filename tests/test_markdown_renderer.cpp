@@ -17,3 +17,11 @@ TEST_CASE("MarkdownRenderer supports tables") {
   const std::string html = renderer.to_html_body(md);
   CHECK(html.find("<table>") != std::string::npos);
 }
+
+TEST_CASE("MarkdownRenderer emits img for image syntax") {
+  stuckinthemd::MarkdownRenderer renderer;
+  const std::string html =
+      renderer.to_html_body("![StuckInTheMD](assets/screenshot.png)");
+  CHECK(html.find("<img") != std::string::npos);
+  CHECK(html.find("assets/screenshot.png") != std::string::npos);
+}

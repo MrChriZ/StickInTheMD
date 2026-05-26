@@ -1,0 +1,47 @@
+---
+description: Bootstrap, configure, build, and run tests (matches CI)
+alwaysApply: true
+---
+
+# Build and test
+
+## First-time / clean clone
+
+```bash
+bash scripts/bootstrap-third-party.sh
+```
+
+## Run tests (preferred — same as CI)
+
+```bash
+bash scripts/run-tests.sh          # Linux/macOS
+```
+
+```powershell
+.\scripts\run-tests.ps1            # Windows
+```
+
+## Manual CMake
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSTUCKINTHEMD_BUILD_TESTS=ON
+cmake --build build
+ctest --test-dir build --output-on-failure          # Linux
+ctest --test-dir build -C Release --output-on-failure  # Windows/macOS VS
+```
+
+Windows VS generator: `-G "Visual Studio 17 2022" -A x64`. If `cmake` is not on PATH, use VS Build Tools CMake under `Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe`.
+
+## Run the app
+
+```powershell
+.\build\Release\stuckinthemd.exe [path\to\file.md]
+```
+
+## After editing `assets/ui.html`
+
+Re-run **configure** so `ui_embedded.cpp` regenerates: `cmake -S . -B build`, then rebuild.
+
+## External-file / preview tests
+
+`tests/test_app_controller.cpp` — use `sleep_for_mtime()` (~1.1s) around disk writes (Windows mtime granularity).
