@@ -1018,6 +1018,25 @@
       }
     };
 
+    window.addEventListener("message", async (e) => {
+      if (!e.data || e.data.type !== "stuck-preview-link" || !e.data.href) return;
+      try {
+        const result = await window.openPreviewLink(e.data.href);
+        if (!result || !result.ok) {
+          setStatus("Link failed");
+          return;
+        }
+        if (result.openedInApp && result.path != null) {
+          applyOpenResult(
+            { ok: true, path: result.path, content: result.content || "" },
+            result.path
+          );
+        }
+      } catch (_) {
+        setStatus("Link failed");
+      }
+    });
+
     window.boot = async (settings) => {
       window.applySettings(settings);
       try {

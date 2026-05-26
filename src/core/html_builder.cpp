@@ -275,6 +275,23 @@ ul.task-list { list-style: none; padding-left: 1.2em; }
 input[type="checkbox"] { margin-right: 0.4em; }
 )css";
 
+constexpr const char *k_preview_link_script = R"html(
+<script>
+document.addEventListener("click", function (e) {
+  var el = e.target;
+  if (!el || !el.closest) return;
+  var a = el.closest("a[href]");
+  if (!a) return;
+  var href = a.getAttribute("href");
+  if (!href || href.charAt(0) === "#") return;
+  e.preventDefault();
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ type: "stuck-preview-link", href: href }, "*");
+  }
+});
+</script>
+)html";
+
 constexpr const char *k_print_css = R"css(
 @page { margin: 2cm; }
 body { font-family: Georgia, "Times New Roman", serif; font-size: 11pt; line-height: 1.5; color: #000; background: #fff; }
@@ -293,7 +310,7 @@ std::string HtmlBuilder::preview_page(const std::string &body_html, const bool d
   return std::string("<!DOCTYPE html><html") + theme_attr +
          "><head><meta charset=\"utf-8\">" + base_tag_for_dir(resource_dir) +
          "<style>" + k_preview_css + "</style></head><body>" + body +
-         "</body></html>";
+         k_preview_link_script + "</body></html>";
 }
 
 std::string HtmlBuilder::print_page(const std::string &body_html,

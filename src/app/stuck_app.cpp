@@ -3,6 +3,7 @@
 #include "stuckinthemd/assets.hpp"
 #include "stuckinthemd/file_dialogs.hpp"
 #include "stuckinthemd/json_util.hpp"
+#include "stuckinthemd/link_opener.hpp"
 #include "stuckinthemd/color_theme.hpp"
 #include "stuckinthemd/version.hpp"
 #include "stuckinthemd/view_mode.hpp"
@@ -237,6 +238,36 @@ void StuckApp::setup_bindings() {
     update_window_title();
     return std::string(R"({"ok":true,"path":)") + json_escape(path->string()) +
            R"(,"content":)" + json_escape(controller_.document().content()) + "}";
+  });
+
+  webview_->bind("openPreviewLink", [this](const std::string &req) -> std::string {
+    const auto href = decode_bind_args(req);
+    if (href.empty()) {
+      return R"({"ok":false,"error":"No link target"})";
+    }
+    const std::filesystem::path doc_path =
+        controller_.document().has_path() ? *controller_.document().path()
+                                          : std::filesystem::path{};
+    const auto target = resolve_preview_link(doc_path, href);
+    if (!target) {
+      return R"({"ok":false,"error":"Could not resolve link"})";
+    }
+    if (target->action == PreviewLinkAction::OpenInApp) {
+      const auto opened = controller_.open_path(target->target);
+      if (!opened.ok) {
+        return std::string(R"({"ok":false,"error":)") + json_escape(opened.error) +
+               "}";
+      }
+      const auto out_path = opened.path ? opened.path->string() : target->target;
+      update_window_title();
+      return std::string(R"({"ok":true,"openedInApp":true,"path":)") +
+             json_escape(out_path) + R"(,"content":)" +
+             json_escape(controller_.document().content()) + "}";
+    }
+    if (!open_with_system_default(target->target)) {
+      return R"({"ok":false,"error":"Could not open link"})";
+    }
+    return R"({"ok":true,"openedInApp":false})";
   });
 
   webview_->bind("openPath", [this](const std::string &req) -> std::string {

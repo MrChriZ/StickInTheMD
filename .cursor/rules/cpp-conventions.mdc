@@ -11,7 +11,7 @@ alwaysApply: false
 - **Disk vs editor text:** load path uses `normalize_document_text`; compare normalized content in `detect_external_file_change`. `update_content` does not normalize (editor bytes).
 - **`sync_disk_state`:** do not clear `disk_mtime_` before reading mtime (race with file-watch thread).
 - **Webview binds:** sync bind return values must be **valid JSON text** (e.g. `json_escape(html)` for strings, or a raw `{...}` object). `onReply` runs `JSON.parse` on the payload. Use `markdown_from_bind_request` for markdown args.
-- **Preview:** HTML via `iframe srcdoc`; local images are inlined as `data:` URIs in `embed_local_images_for_preview` (`file://` / `<base href>` do not work in srcdoc).
+- **Preview:** HTML via `iframe srcdoc`; local images are inlined as `data:` URIs in `embed_local_images_for_preview` (`file://` / `<base href>` do not work in srcdoc). Preview link clicks use `postMessage` → `openPreviewLink` (`link_opener.cpp`): `.md` opens in-app, other URLs/files use the OS default handler.
 - **UI sync from C++:** `publish_document_to_ui` → `window.applyDocument`; JS skips work if path+content unchanged (avoids preview cancel loop).
 
 New behavior for external files → extend `AppController` + tests in `test_app_controller.cpp` before UI wiring in `stuck_app.cpp`.

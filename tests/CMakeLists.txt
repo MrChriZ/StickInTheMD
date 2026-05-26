@@ -10,6 +10,7 @@ add_executable(stuckinthemd_tests
     test_view_mode.cpp
     test_color_theme.cpp
     test_text_normalize.cpp
+    test_link_opener.cpp
 )
 
 target_link_libraries(stuckinthemd_tests PRIVATE stuckinthemd_core)

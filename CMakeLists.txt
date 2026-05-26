@@ -49,6 +49,7 @@ add_library(stuckinthemd_core STATIC
     src/core/text_normalize.cpp
     src/core/file_dialogs.cpp
     src/core/pdf_exporter.cpp
+    src/core/link_opener.cpp
     ${STUCKINTHEMD_UI_EMBEDDED_CPP}
     third_party/tinyfiledialogs/tinyfiledialogs.c
 )
@@ -61,7 +62,7 @@ target_link_libraries(stuckinthemd_core PUBLIC md4c-html)
 target_compile_definitions(stuckinthemd_core PRIVATE _CRT_SECURE_NO_WARNINGS)
 
 if(WIN32)
-    target_link_libraries(stuckinthemd_core PRIVATE comdlg32 ole32)
+    target_link_libraries(stuckinthemd_core PRIVATE comdlg32 ole32 shell32)
 endif()
 
 if(STUCKINTHEMD_BUILD_APP)
