@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 struct LoadResult {
   bool ok = false;
@@ -23,4 +23,4 @@ public:
                   const std::string &content) const;
 };
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

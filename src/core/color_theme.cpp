@@ -1,6 +1,6 @@
-#include "stickinthemd/color_theme.hpp"
+#include "stuckinthemd/color_theme.hpp"
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 ColorTheme color_theme_from_string(std::string_view name) {
   if (name == "light") {
@@ -24,4 +24,4 @@ bool color_theme_is_dark(ColorTheme theme, bool system_prefers_dark) {
   return false;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

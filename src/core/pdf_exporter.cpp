@@ -1,9 +1,9 @@
-#include "stickinthemd/pdf_exporter.hpp"
+#include "stuckinthemd/pdf_exporter.hpp"
 
 #include <cstdlib>
 #include <sstream>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 namespace {
 
@@ -92,4 +92,4 @@ PdfExporter::export_html_file(const std::filesystem::path &html_path,
   return result;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

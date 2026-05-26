@@ -1,4 +1,4 @@
-# Contributing to StickInTheMD
+# Contributing to StuckInTheMD
 
 Thank you for your interest in contributing.
 
@@ -14,7 +14,7 @@ Thank you for your interest in contributing.
 3. Configure and build:
 
    ```bash
-   cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSTICKINTHEMD_BUILD_TESTS=ON
+   cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSTUCKINTHEMD_BUILD_TESTS=ON
    cmake --build build
    ```
 

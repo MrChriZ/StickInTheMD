@@ -1,4 +1,4 @@
-// Application icon for StickInTheMD (Windows)
+// Application icon for StuckInTheMD (Windows)
 #define IDI_APPLICATION 32512
 
-IDI_APPLICATION ICON "../../assets/icon/stickinthemd.ico"
+IDI_APPLICATION ICON "../../assets/icon/stuckinthemd.ico"

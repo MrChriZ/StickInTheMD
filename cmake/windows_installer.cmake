@@ -1,8 +1,8 @@
-# Optional: build the Inno Setup installer after stickinthemd (requires ISCC on PATH).
-option(STICKINTHEMD_BUILD_WINDOWS_INSTALLER
-    "Build StickInTheMD-*-setup.exe with Inno Setup after stickinthemd" OFF)
+# Optional: build the Inno Setup installer after stuckinthemd (requires ISCC on PATH).
+option(STUCKINTHEMD_BUILD_WINDOWS_INSTALLER
+    "Build StuckInTheMD-*-setup.exe with Inno Setup after stuckinthemd" OFF)
 
-if(NOT STICKINTHEMD_BUILD_WINDOWS_INSTALLER)
+if(NOT STUCKINTHEMD_BUILD_WINDOWS_INSTALLER)
     return()
 endif()
 
@@ -14,25 +14,25 @@ find_program(ISCC_EXECUTABLE ISCC
     NAMES ISCC ISCC.exe)
 
 if(NOT ISCC_EXECUTABLE)
-    message(WARNING "Inno Setup (ISCC) not found; STICKINTHEMD_BUILD_WINDOWS_INSTALLER ignored")
+    message(WARNING "Inno Setup (ISCC) not found; STUCKINTHEMD_BUILD_WINDOWS_INSTALLER ignored")
     return()
 endif()
 
-set(STICKINTHEMD_ISS "${CMAKE_SOURCE_DIR}/packaging/windows/stickinthemd.iss")
-set(STICKINTHEMD_DIST "${CMAKE_SOURCE_DIR}/dist")
+set(STUCKINTHEMD_ISS "${CMAKE_SOURCE_DIR}/packaging/windows/stuckinthemd.iss")
+set(STUCKINTHEMD_DIST "${CMAKE_SOURCE_DIR}/dist")
 
 add_custom_command(
-    OUTPUT "${STICKINTHEMD_DIST}/StickInTheMD-${PROJECT_VERSION}-setup.exe"
-    COMMAND "${CMAKE_COMMAND}" -E make_directory "${STICKINTHEMD_DIST}"
-    COMMAND "${ISCC_EXECUTABLE}" "${STICKINTHEMD_ISS}"
+    OUTPUT "${STUCKINTHEMD_DIST}/StuckInTheMD-${PROJECT_VERSION}-setup.exe"
+    COMMAND "${CMAKE_COMMAND}" -E make_directory "${STUCKINTHEMD_DIST}"
+    COMMAND "${ISCC_EXECUTABLE}" "${STUCKINTHEMD_ISS}"
         "/DMyAppVersion=${PROJECT_VERSION}"
-        "/DMyAppSourceDir=$<TARGET_FILE_DIR:stickinthemd>"
-    DEPENDS stickinthemd "${STICKINTHEMD_ISS}"
+        "/DMyAppSourceDir=$<TARGET_FILE_DIR:stuckinthemd>"
+    DEPENDS stuckinthemd "${STUCKINTHEMD_ISS}"
         "${CMAKE_SOURCE_DIR}/packaging/windows/LICENSE.txt"
-        "${CMAKE_SOURCE_DIR}/assets/icon/stickinthemd.ico"
+        "${CMAKE_SOURCE_DIR}/assets/icon/stuckinthemd.ico"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/packaging/windows"
-    COMMENT "Building Windows installer StickInTheMD-${PROJECT_VERSION}-setup.exe"
+    COMMENT "Building Windows installer StuckInTheMD-${PROJECT_VERSION}-setup.exe"
     VERBATIM)
 
-add_custom_target(stickinthemd_installer
-    DEPENDS "${STICKINTHEMD_DIST}/StickInTheMD-${PROJECT_VERSION}-setup.exe")
+add_custom_target(stuckinthemd_installer
+    DEPENDS "${STUCKINTHEMD_DIST}/StuckInTheMD-${PROJECT_VERSION}-setup.exe")

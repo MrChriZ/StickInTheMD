@@ -1,8 +1,8 @@
-#include "stickinthemd/text_normalize.hpp"
+#include "stuckinthemd/text_normalize.hpp"
 
-#include "stickinthemd/json_util.hpp"
+#include "stuckinthemd/json_util.hpp"
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 namespace {
 
@@ -36,4 +36,4 @@ std::string normalize_document_text(std::string text) {
   return text;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

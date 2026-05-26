@@ -1,10 +1,10 @@
-# StickInTheMD
+# StuckInTheMD
 
-![CI](https://github.com/MrChriZ/StickInTheMD/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/MrChriZ/StuckInTheMD/actions/workflows/ci.yml/badge.svg)
 
 A lightweight, cross-platform Markdown editor with live preview.
 
-![StickInTheMD — split editor with live preview](assets/screenshot.png)
+![StuckInTheMD — split editor with live preview](assets/screenshot.png)
 
 Built with **modern C++20**, a small native core, and your operating system's built-in webview (no bundled Chromium/Electron).
 
@@ -22,11 +22,11 @@ Built with **modern C++20**, a small native core, and your operating system's bu
 
 ## Download
 
-Pre-built installers are published on [GitHub Releases](https://github.com/MrChriZ/StickInTheMD/releases).
+Pre-built installers are published on [GitHub Releases](https://github.com/MrChriZ/StuckInTheMD/releases).
 
 | Platform | Download |
 |----------|----------|
-| **Windows** (x64) | [StickInTheMD 1.0.0 setup](https://github.com/MrChriZ/StickInTheMD/releases/download/v1.0.0/StickInTheMD-1.0.0-setup.exe) (~2.5 MB) |
+| **Windows** (x64) | [Latest installer](https://github.com/MrChriZ/StuckInTheMD/releases/latest) (~2.5 MB) |
 | macOS / Linux | Build from source (see below) |
 
 On Windows 10, install the [WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/) if the app window does not appear.
@@ -54,7 +54,7 @@ Optional: install Edge, Chrome, or `wkhtmltopdf` for one-click PDF export withou
 
 ## Application icon
 
-Icons live in `assets/icon/`. Windows uses `stickinthemd.ico` automatically. On macOS, run `bash scripts/build-macos-icon.sh` once (or let CI build it) to produce `stickinthemd.icns` for the `.app` bundle.
+Icons live in `assets/icon/`. Windows uses `stuckinthemd.ico` automatically. On macOS, run `bash scripts/build-macos-icon.sh` once (or let CI build it) to produce `stuckinthemd.icns` for the `.app` bundle.
 
 Open/Save file dialogs are parented to the main window so they stay modal, use the app icon, and do not get a separate taskbar button.
 
@@ -68,7 +68,7 @@ Before your first build, run:
 bash scripts/bootstrap-third-party.sh
 ```
 
-**Version** is set in `CMakeLists.txt` (`project(StickInTheMD VERSION …)`). It appears in the window title, toolbar badge, and Windows installer filename.
+**Version** is set in `CMakeLists.txt` (`project(StuckInTheMD VERSION …)`). It appears in the window title, toolbar badge, and Windows installer filename.
 
 ## Build
 
@@ -82,13 +82,13 @@ cmake --build build --config Release
 ```powershell
 cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Release
-.\build\Release\stickinthemd.exe
-.\build\Release\stickinthemd.exe notes.md
+.\build\Release\stuckinthemd.exe
+.\build\Release\stuckinthemd.exe notes.md
 ```
 
 ### Windows installer
 
-Creates a single `dist\StickInTheMD-<version>-setup.exe` (~few MB) that embeds one `stickinthemd.exe` (static MSVC runtime, no extra DLLs). Preview uses the OS WebView2 engine (preinstalled on Windows 11; see below for Windows 10).
+Creates a single `dist\StuckInTheMD-<version>-setup.exe` (~few MB) that embeds one `stuckinthemd.exe` (static MSVC runtime, no extra DLLs). Preview uses the OS WebView2 engine (preinstalled on Windows 11; see below for Windows 10).
 
 1. Install [Inno Setup 6](https://jrsoftware.org/isinfo.php).
 2. Build the app, then compile the installer:
@@ -97,13 +97,13 @@ Creates a single `dist\StickInTheMD-<version>-setup.exe` (~few MB) that embeds o
 .\scripts\build-windows-installer.ps1
 ```
 
-During setup, **“Make StickInTheMD the default app for Markdown files”** is enabled by default. That registers `.md` and `.markdown` to open with StickInTheMD. On some Windows versions you may still confirm under **Settings → Apps → Default apps**.
+During setup, **“Make StuckInTheMD the default app for Markdown files”** is enabled by default. That registers `.md` and `.markdown` to open with StuckInTheMD. On some Windows versions you may still confirm under **Settings → Apps → Default apps**.
 
 Or, after a CMake build with Inno Setup on `PATH`:
 
 ```powershell
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DSTICKINTHEMD_BUILD_WINDOWS_INSTALLER=ON
-cmake --build build --config Release --target stickinthemd_installer
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DSTUCKINTHEMD_BUILD_WINDOWS_INSTALLER=ON
+cmake --build build --config Release --target stuckinthemd_installer
 ```
 
 **Windows 10:** install the [WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/) if the app window does not appear (one-time, shared by other apps).
@@ -113,20 +113,20 @@ cmake --build build --config Release --target stickinthemd_installer
 ```bash
 sudo apt install build-essential cmake libgtk-3-dev libwebkit2gtk-4.1-dev
 cmake -S . -B build && cmake --build build
-./build/stickinthemd
+./build/stuckinthemd
 ```
 
 ### macOS
 
 ```bash
 cmake -S . -B build && cmake --build build
-./build/stickinthemd
+./build/stuckinthemd
 ```
 
 ## Tests
 
 ```bash
-cmake -S . -B build -DSTICKINTHEMD_BUILD_TESTS=ON
+cmake -S . -B build -DSTUCKINTHEMD_BUILD_TESTS=ON
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```

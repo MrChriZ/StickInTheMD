@@ -2,8 +2,8 @@
 
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 std::string load_ui_html();
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

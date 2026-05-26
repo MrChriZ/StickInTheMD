@@ -1,5 +1,5 @@
-; StickInTheMD Windows installer (Inno Setup 6+)
-; Single-file setup.exe embedding stickinthemd.exe (static MSVC; uses OS WebView2).
+; StuckInTheMD Windows installer (Inno Setup 6+)
+; Single-file setup.exe embedding stuckinthemd.exe (static MSVC; uses OS WebView2).
 ; Build: scripts/build-windows-installer.ps1
 
 #ifndef MyAppVersion
@@ -10,10 +10,10 @@
   #define MyAppSourceDir "..\..\build\Release"
 #endif
 
-#define MyAppName "StickInTheMD"
-#define MyAppPublisher "StickInTheMD"
-#define MyAppExeName "stickinthemd.exe"
-#define MyAppProgId "StickInTheMDMarkdown"
+#define MyAppName "StuckInTheMD"
+#define MyAppPublisher "StuckInTheMD"
+#define MyAppExeName "stuckinthemd.exe"
+#define MyAppProgId "StuckInTheMDMarkdown"
 
 [Setup]
 AppId={{E8C4A21D-9F6B-4D2E-A1C3-5B7D8E9F0A1B}
@@ -25,8 +25,8 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=LICENSE.txt
 OutputDir=..\..\dist
-OutputBaseFilename=StickInTheMD-{#MyAppVersion}-setup
-SetupIconFile=..\..\assets\icon\stickinthemd.ico
+OutputBaseFilename=StuckInTheMD-{#MyAppVersion}-setup
+SetupIconFile=..\..\assets\icon\stuckinthemd.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/max
 SolidCompression=yes

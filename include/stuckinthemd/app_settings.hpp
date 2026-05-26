@@ -1,11 +1,11 @@
 #pragma once
 
-#include "stickinthemd/color_theme.hpp"
-#include "stickinthemd/view_mode.hpp"
+#include "stuckinthemd/color_theme.hpp"
+#include "stuckinthemd/view_mode.hpp"
 
 #include <chrono>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 struct AppSettings {
   bool autosave_enabled = true;
@@ -15,4 +15,4 @@ struct AppSettings {
   ColorTheme color_theme = ColorTheme::System;
 };
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

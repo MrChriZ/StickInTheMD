@@ -1,4 +1,4 @@
-add_executable(stickinthemd_tests
+add_executable(stuckinthemd_tests
     test_markdown_renderer.cpp
     test_html_builder.cpp
     test_document.cpp
@@ -12,10 +12,10 @@ add_executable(stickinthemd_tests
     test_text_normalize.cpp
 )
 
-target_link_libraries(stickinthemd_tests PRIVATE stickinthemd_core)
-target_include_directories(stickinthemd_tests PRIVATE
+target_link_libraries(stuckinthemd_tests PRIVATE stuckinthemd_core)
+target_include_directories(stuckinthemd_tests PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/third_party/doctest
 )
 
-add_test(NAME stickinthemd_tests COMMAND stickinthemd_tests)
+add_test(NAME stuckinthemd_tests COMMAND stuckinthemd_tests)

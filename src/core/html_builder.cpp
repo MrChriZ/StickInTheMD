@@ -1,6 +1,6 @@
-#include "stickinthemd/html_builder.hpp"
+#include "stuckinthemd/html_builder.hpp"
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 namespace {
 
@@ -79,4 +79,4 @@ std::string HtmlBuilder::print_page(const std::string &body_html,
          "</style></head><body>" + body_html + "</body></html>";
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

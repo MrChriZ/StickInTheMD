@@ -1,4 +1,4 @@
-#include "stickinthemd/markdown_renderer.hpp"
+#include "stuckinthemd/markdown_renderer.hpp"
 
 extern "C" {
 #include "md4c-html.h"
@@ -6,7 +6,7 @@ extern "C" {
 
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 namespace {
 
@@ -32,4 +32,4 @@ std::string MarkdownRenderer::to_html_body(const std::string &markdown) const {
   return html;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

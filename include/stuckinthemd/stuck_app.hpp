@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stickinthemd/app_controller.hpp"
-#include "stickinthemd/pdf_exporter.hpp"
+#include "stuckinthemd/app_controller.hpp"
+#include "stuckinthemd/pdf_exporter.hpp"
 
 #include <atomic>
 #include <chrono>
@@ -11,12 +11,12 @@
 
 #include <webview/webview.h>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
-class StickApp {
+class StuckApp {
 public:
-  StickApp();
-  ~StickApp();
+  StuckApp();
+  ~StuckApp();
 
   int run(int argc, char *argv[]);
 
@@ -35,4 +35,4 @@ private:
   std::atomic<bool> autosave_stop_{false};
 };
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

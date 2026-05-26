@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 enum class ViewMode { Split, Editor, Preview };
 
@@ -23,4 +23,4 @@ ViewMode view_mode_from_string(std::string_view name);
 
 ViewMode cycle_view_mode(ViewMode current);
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

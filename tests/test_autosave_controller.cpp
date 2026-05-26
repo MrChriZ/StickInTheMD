@@ -1,11 +1,11 @@
 #include <doctest/doctest.h>
 
-#include "stickinthemd/autosave_controller.hpp"
+#include "stuckinthemd/autosave_controller.hpp"
 
 using steady_clock = std::chrono::steady_clock;
 
 TEST_CASE("AutosaveController waits for interval after edits") {
-  stickinthemd::AutosaveController autosave;
+  stuckinthemd::AutosaveController autosave;
   autosave.set_interval(std::chrono::milliseconds(1000));
 
   const auto t0 = steady_clock::now();
@@ -17,7 +17,7 @@ TEST_CASE("AutosaveController waits for interval after edits") {
 }
 
 TEST_CASE("AutosaveController requires path and dirty flag") {
-  stickinthemd::AutosaveController autosave;
+  stuckinthemd::AutosaveController autosave;
   const auto now = steady_clock::now();
   CHECK_FALSE(autosave.should_autosave(false, true, now, now, now + std::chrono::seconds(5)));
   CHECK_FALSE(autosave.should_autosave(true, false, now, now, now + std::chrono::seconds(5)));

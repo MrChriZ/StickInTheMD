@@ -1,6 +1,6 @@
-#include "stickinthemd/document.hpp"
+#include "stuckinthemd/document.hpp"
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 Document::Document(std::filesystem::path path, std::string content)
     : path_(std::move(path)), content_(std::move(content)), dirty_(false) {}
@@ -24,4 +24,4 @@ void Document::mark_dirty() {
   last_edit_ = std::chrono::steady_clock::now();
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

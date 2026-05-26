@@ -1,12 +1,12 @@
 # Third-party notices
 
-StickInTheMD bundles or links the following third-party software. This file
+StuckInTheMD bundles or links the following third-party software. This file
 satisfies attribution requirements for binary distributions (installers,
 releases).
 
-## StickInTheMD
+## StuckInTheMD
 
-Copyright (c) StickInTheMD contributors
+Copyright (c) StuckInTheMD contributors
 
 Licensed under the MIT License. See [LICENSE](LICENSE).
 

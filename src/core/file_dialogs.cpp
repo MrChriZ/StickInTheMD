@@ -1,4 +1,4 @@
-#include "stickinthemd/file_dialogs.hpp"
+#include "stuckinthemd/file_dialogs.hpp"
 
 #include <cstring>
 
@@ -6,7 +6,7 @@ extern "C" {
 #include "tinyfiledialogs.h"
 }
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 void set_file_dialog_parent(void *native_window) {
 #ifdef _WIN32
@@ -47,4 +47,4 @@ pick_save_markdown(const std::filesystem::path &suggested) {
   return from_dialog(path);
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

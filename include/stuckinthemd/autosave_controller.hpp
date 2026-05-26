@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 class AutosaveController {
 public:
@@ -25,4 +25,4 @@ private:
   std::chrono::milliseconds interval_{2000};
 };
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

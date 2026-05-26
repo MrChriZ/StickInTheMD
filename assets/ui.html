@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>StickInTheMD</title>
+  <title>StuckInTheMD</title>
   <style>
     :root {
       color-scheme: light;
@@ -503,7 +503,7 @@
         <div class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm0 5h10v2H4v-2zm0 5h14v2H4v-2z"/></svg>
         </div>
-        <span class="brand-name">StickInTheMD</span>
+        <span class="brand-name">StuckInTheMD</span>
         <span class="brand-version" id="app-version"></span>
       </div>
 
@@ -600,8 +600,8 @@
     const dropOverlay = document.getElementById("drop-overlay");
     const recentSelect = document.getElementById("recent-select");
     const appVersionEl = document.getElementById("app-version");
-    const THEME_STORAGE_KEY = "stickinthemd-color-theme";
-    const RECENT_STORAGE_KEY = "stickinthemd-recent-files";
+    const THEME_STORAGE_KEY = "stuckinthemd-color-theme";
+    const RECENT_STORAGE_KEY = "stuckinthemd-recent-files";
     const RECENT_MAX = 10;
     const MARKDOWN_EXT = /\.(md|markdown|mdown|mkd|mkdn|txt)$/i;
     const themeOrder = ["system", "dark", "light"];
@@ -734,8 +734,8 @@
     function applyAppVersion(version) {
       const v = version ? String(version) : "";
       appVersionEl.textContent = v ? "v" + v : "";
-      appVersionEl.title = v ? "StickInTheMD " + v : "StickInTheMD";
-      document.title = v ? "StickInTheMD " + v : "StickInTheMD";
+      appVersionEl.title = v ? "StuckInTheMD " + v : "StuckInTheMD";
+      document.title = v ? "StuckInTheMD " + v : "StuckInTheMD";
     }
 
     function setStatus(text) { statusEl.textContent = text; }

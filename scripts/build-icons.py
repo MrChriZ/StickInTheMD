@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate stickinthemd.ico and PNG sizes from assets/icon/stickinthemd-256.png."""
+"""Regenerate stuckinthemd.ico and PNG sizes from assets/icon/stuckinthemd-256.png."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -11,17 +11,17 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[1]
 ICON_DIR = ROOT / "assets" / "icon"
-SRC = ICON_DIR / "stickinthemd-256.png"
+SRC = ICON_DIR / "stuckinthemd-256.png"
 
 if not SRC.exists():
     raise SystemExit(f"Missing source icon: {SRC}")
 
 img = Image.open(SRC).convert("RGBA")
 for size in (16, 32, 48, 64, 128, 256, 512):
-    img.resize((size, size), Image.Resampling.LANCZOS).save(ICON_DIR / f"stickinthemd-{size}.png")
+    img.resize((size, size), Image.Resampling.LANCZOS).save(ICON_DIR / f"stuckinthemd-{size}.png")
 
 img.save(
-    ICON_DIR / "stickinthemd.ico",
+    ICON_DIR / "stuckinthemd.ico",
     format="ICO",
     sizes=[(256, 256), (128, 128), (64, 64), (48, 48), (32, 32), (16, 16)],
 )

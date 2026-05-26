@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 class Document {
 public:
@@ -35,4 +35,4 @@ private:
       std::chrono::steady_clock::now();
 };
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

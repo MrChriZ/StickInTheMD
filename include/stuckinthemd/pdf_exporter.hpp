@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 struct PdfExportResult {
   bool ok = false;
@@ -17,4 +17,4 @@ public:
                                    const std::filesystem::path &pdf_path) const;
 };
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

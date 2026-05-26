@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Build macOS .icns from assets/icon/stickinthemd-*.png (requires macOS iconutil)
+# Build macOS .icns from assets/icon/stuckinthemd-*.png (requires macOS iconutil)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ICONSET="$ROOT/assets/icon/stickinthemd.iconset"
-OUT="$ROOT/assets/icon/stickinthemd.icns"
+ICONSET="$ROOT/assets/icon/stuckinthemd.iconset"
+OUT="$ROOT/assets/icon/stuckinthemd.icns"
 ICON_SRC="$ROOT/assets/icon"
 
 mkdir -p "$ICONSET"
-copy() { cp "$ICON_SRC/stickinthemd-$1.png" "$ICONSET/icon_$2"; }
+copy() { cp "$ICON_SRC/stuckinthemd-$1.png" "$ICONSET/icon_$2"; }
 
 copy 16 16x16.png
 copy 32 32x32.png

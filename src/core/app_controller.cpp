@@ -1,10 +1,10 @@
-#include "stickinthemd/app_controller.hpp"
+#include "stuckinthemd/app_controller.hpp"
 
-#include "stickinthemd/text_normalize.hpp"
+#include "stuckinthemd/text_normalize.hpp"
 
 #include <system_error>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 namespace {
 
@@ -129,4 +129,4 @@ void AppController::note_autosave(std::chrono::steady_clock::time_point now) {
   last_autosave_ = now;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

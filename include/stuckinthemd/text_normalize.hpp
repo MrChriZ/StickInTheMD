@@ -2,9 +2,9 @@
 
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 // Repairs files saved as a single JSON-escaped line (literal \n, wrapping quotes).
 std::string normalize_document_text(std::string text);
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

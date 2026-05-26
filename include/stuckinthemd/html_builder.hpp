@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 class HtmlBuilder {
 public:
@@ -11,4 +11,4 @@ public:
                          const std::string &title = "Document") const;
 };
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

@@ -1,11 +1,11 @@
-#include "stickinthemd/document_store.hpp"
+#include "stuckinthemd/document_store.hpp"
 
-#include "stickinthemd/text_normalize.hpp"
+#include "stuckinthemd/text_normalize.hpp"
 
 #include <fstream>
 #include <sstream>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 namespace {
 
@@ -68,4 +68,4 @@ SaveResult DocumentStore::save(const std::filesystem::path &path,
   return result;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

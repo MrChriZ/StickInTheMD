@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=StickInTheMD
+Name=StuckInTheMD
 Comment=Lightweight Markdown editor with live preview
-Exec=stickinthemd %F
-Icon=stickinthemd
+Exec=stuckinthemd %F
+Icon=stuckinthemd
 Terminal=false
 Categories=Office;TextEditor;
 MimeType=text/markdown;text/x-markdown;
-StartupWMClass=stickinthemd
+StartupWMClass=stuckinthemd

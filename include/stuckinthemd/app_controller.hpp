@@ -1,18 +1,18 @@
 #pragma once
 
-#include "stickinthemd/app_settings.hpp"
-#include "stickinthemd/autosave_controller.hpp"
-#include "stickinthemd/document.hpp"
-#include "stickinthemd/document_store.hpp"
-#include "stickinthemd/html_builder.hpp"
-#include "stickinthemd/markdown_renderer.hpp"
+#include "stuckinthemd/app_settings.hpp"
+#include "stuckinthemd/autosave_controller.hpp"
+#include "stuckinthemd/document.hpp"
+#include "stuckinthemd/document_store.hpp"
+#include "stuckinthemd/html_builder.hpp"
+#include "stuckinthemd/markdown_renderer.hpp"
 
 #include <chrono>
 #include <filesystem>
 #include <optional>
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 struct OpenResult {
   bool ok = false;
@@ -62,4 +62,4 @@ private:
       std::chrono::steady_clock::now();
 };
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

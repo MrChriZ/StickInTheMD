@@ -1,6 +1,6 @@
-#include "stickinthemd/view_mode.hpp"
+#include "stuckinthemd/view_mode.hpp"
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 ViewMode view_mode_from_string(std::string_view name) {
   if (name == "editor") {
@@ -24,4 +24,4 @@ ViewMode cycle_view_mode(ViewMode current) {
   return ViewMode::Split;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

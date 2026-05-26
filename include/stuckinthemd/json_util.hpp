@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 inline std::string json_escape(const std::string &text) {
   std::ostringstream out;
@@ -110,4 +110,4 @@ inline std::string markdown_from_bind_request(const std::string &req) {
   return bind_first_arg(req);
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

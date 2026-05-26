@@ -1,9 +1,9 @@
-Third-party notices for StickInTheMD
+Third-party notices for StuckInTheMD
 =====================================
 
-StickInTheMD
+StuckInTheMD
 ------------
-Copyright (c) StickInTheMD contributors
+Copyright (c) StuckInTheMD contributors
 
 Licensed under the MIT License (see LICENSE.txt shown during setup).
 

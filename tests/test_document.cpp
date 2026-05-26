@@ -1,9 +1,9 @@
 #include <doctest/doctest.h>
 
-#include "stickinthemd/document.hpp"
+#include "stuckinthemd/document.hpp"
 
 TEST_CASE("Document tracks dirty state on edits") {
-  stickinthemd::Document doc;
+  stuckinthemd::Document doc;
   CHECK_FALSE(doc.is_dirty());
   doc.set_content("hello");
   CHECK(doc.is_dirty());
@@ -13,7 +13,7 @@ TEST_CASE("Document tracks dirty state on edits") {
 }
 
 TEST_CASE("Document stores optional path") {
-  stickinthemd::Document doc{std::filesystem::path{"notes.md"}, "# Hi"};
+  stuckinthemd::Document doc{std::filesystem::path{"notes.md"}, "# Hi"};
   CHECK(doc.has_path());
   CHECK(doc.path()->filename() == "notes.md");
   doc.clear_path();

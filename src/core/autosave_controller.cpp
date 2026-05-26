@@ -1,6 +1,6 @@
-#include "stickinthemd/autosave_controller.hpp"
+#include "stuckinthemd/autosave_controller.hpp"
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 bool AutosaveController::should_autosave(
     bool document_dirty, bool has_path,
@@ -16,4 +16,4 @@ bool AutosaveController::should_autosave(
   return (now - last_autosave) >= interval_;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd

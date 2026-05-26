@@ -1,11 +1,11 @@
-#include "stickinthemd/stick_app.hpp"
+#include "stuckinthemd/stuck_app.hpp"
 
-#include "stickinthemd/assets.hpp"
-#include "stickinthemd/file_dialogs.hpp"
-#include "stickinthemd/json_util.hpp"
-#include "stickinthemd/color_theme.hpp"
-#include "stickinthemd/version.hpp"
-#include "stickinthemd/view_mode.hpp"
+#include "stuckinthemd/assets.hpp"
+#include "stuckinthemd/file_dialogs.hpp"
+#include "stuckinthemd/json_util.hpp"
+#include "stuckinthemd/color_theme.hpp"
+#include "stuckinthemd/version.hpp"
+#include "stuckinthemd/view_mode.hpp"
 
 #include <webview/detail/json.hh>
 #include <webview/webview.h>
@@ -14,7 +14,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace stickinthemd {
+namespace stuckinthemd {
 
 namespace {
 
@@ -33,7 +33,7 @@ std::string decode_bind_args(const std::string &args) {
 }
 
 std::filesystem::path temp_dir() {
-  auto dir = std::filesystem::temp_directory_path() / "stickinthemd";
+  auto dir = std::filesystem::temp_directory_path() / "stuckinthemd";
   std::error_code ec;
   std::filesystem::create_directories(dir, ec);
   return dir;
@@ -41,11 +41,11 @@ std::filesystem::path temp_dir() {
 
 } // namespace
 
-StickApp::StickApp() = default;
+StuckApp::StuckApp() = default;
 
-StickApp::~StickApp() { stop_autosave_worker(); }
+StuckApp::~StuckApp() { stop_autosave_worker(); }
 
-bool StickApp::write_temp_html(const std::filesystem::path &path,
+bool StuckApp::write_temp_html(const std::filesystem::path &path,
                              const std::string &html) const {
   std::ofstream out(path, std::ios::binary | std::ios::trunc);
   if (!out) {
@@ -55,7 +55,7 @@ bool StickApp::write_temp_html(const std::filesystem::path &path,
   return out.good();
 }
 
-std::string StickApp::build_state_json() const {
+std::string StuckApp::build_state_json() const {
   std::ostringstream json;
   json << "{";
   json << "\"path\":";
@@ -98,7 +98,7 @@ std::string build_settings_json(const AppController &controller) {
 
 } // namespace
 
-void StickApp::setup_bindings() {
+void StuckApp::setup_bindings() {
   webview_->bind("renderMarkdown", [this](const std::string &req) -> std::string {
     const auto markdown = decode_bind_arg_at(req, 0);
     const auto appearance = decode_bind_arg_at(req, 1);
@@ -265,7 +265,7 @@ void StickApp::setup_bindings() {
   });
 }
 
-void StickApp::start_autosave_worker() {
+void StuckApp::start_autosave_worker() {
   autosave_stop_ = false;
   autosave_thread_ = std::thread([this] {
     while (!autosave_stop_.load()) {
@@ -286,21 +286,21 @@ void StickApp::start_autosave_worker() {
   });
 }
 
-void StickApp::stop_autosave_worker() {
+void StuckApp::stop_autosave_worker() {
   autosave_stop_ = true;
   if (autosave_thread_.joinable()) {
     autosave_thread_.join();
   }
 }
 
-int StickApp::run(int argc, char *argv[]) {
+int StuckApp::run(int argc, char *argv[]) {
   if (argc > 1) {
     const std::filesystem::path arg_path = argv[1];
     controller_.open_path(arg_path);
   }
 
   webview_ = std::make_unique<webview::webview>(true, nullptr); // webview = browser_engine
-  webview_->set_title(std::string("StickInTheMD ") + app_version());
+  webview_->set_title(std::string("StuckInTheMD ") + app_version());
   webview_->set_size(1200, 800, WEBVIEW_HINT_NONE);
 
   const auto main_window = webview_->window();
@@ -320,14 +320,14 @@ int StickApp::run(int argc, char *argv[]) {
   return 0;
 }
 
-} // namespace stickinthemd
+} // namespace stuckinthemd
 
 int main(int argc, char *argv[]) {
   try {
-    stickinthemd::StickApp app;
+    stuckinthemd::StuckApp app;
     return app.run(argc, argv);
   } catch (const std::exception &e) {
-    std::cerr << "StickInTheMD failed: " << e.what() << '\n';
+    std::cerr << "StuckInTheMD failed: " << e.what() << '\n';
     return 1;
   }
 }
