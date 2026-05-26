@@ -1,0 +1,45 @@
+Third-party notices for StickInTheMD
+=====================================
+
+StickInTheMD
+------------
+Copyright (c) StickInTheMD contributors
+
+Licensed under the MIT License (see LICENSE.txt shown during setup).
+
+md4c
+----
+Copyright (c) 2016-2026 Martin Mitas
+https://github.com/mity/md4c
+
+MIT License. Statically linked into the application.
+
+webview
+-------
+Copyright (c) 2017 Serge Zaitsev
+Copyright (c) 2022 Steffen Andre Langnes
+https://github.com/webview/webview
+
+MIT License. Statically linked into the application.
+
+tinyfiledialogs
+---------------
+Copyright (c) 2014-2017 Guillaume Vareille
+http://tinyfiledialogs.sourceforge.net
+
+zlib License. Compiled into the application.
+
+doctest (tests only; not in this installer)
+-------------------------------------------
+Copyright (c) 2016-2023 Viktor Kirilov
+https://github.com/doctest/doctest
+
+MIT License. Used only for unit tests.
+
+Microsoft Edge WebView2
+-----------------------
+On Windows, this application uses the Microsoft Edge WebView2 runtime provided
+by the operating system (or installed separately on Windows 10). The WebView2
+SDK is used at build time only and is not redistributed in this installer.
+
+Runtime: https://developer.microsoft.com/microsoft-edge/webview2/

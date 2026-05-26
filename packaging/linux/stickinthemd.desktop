@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=StickInTheMD
+Comment=Lightweight Markdown editor with live preview
+Exec=stickinthemd %F
+Icon=stickinthemd
+Terminal=false
+Categories=Office;TextEditor;
+MimeType=text/markdown;text/x-markdown;
+StartupWMClass=stickinthemd
