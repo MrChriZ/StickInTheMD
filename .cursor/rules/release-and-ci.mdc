@@ -9,6 +9,8 @@ alwaysApply: true
 
 - Workflow: `.github/workflows/ci.yml` → calls `reusable-tests.yml` (Linux, macOS, Windows).
 - Badge in README tracks `ci.yml` on `main` (~3–5 min; badge cache can lag).
+- Manual run: **Actions → CI → Run workflow** (branch `main`), or `gh workflow run ci.yml --repo MrChriZ/StuckInTheMD --ref main`.
+- If pushes stop triggering runs or jobs stay **queued** with 0 jobs: see [.github/ACTIONS_TROUBLESHOOTING.md](.github/ACTIONS_TROUBLESHOOTING.md) and [githubstatus.com](https://www.githubstatus.com) (Actions degraded).
 
 ## Release notes (required before every release)
 
